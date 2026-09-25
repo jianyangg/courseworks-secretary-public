@@ -1,0 +1,10 @@
+.env*
+!.env.example
+.venv/
+.vercel/
+work/
+output/
+tmp/
+__pycache__/
+*.pyc
+.DS_Store

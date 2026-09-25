@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>CourseWorks Secretary</title>
+    <link rel="icon" href="/favicon.svg?v=3" type="image/svg+xml">
+    <link rel="stylesheet" href="/app.css">
+    <script src="/timeline-filters.js" defer></script>
+    <script src="/graded-work.js" defer></script>
+    <script src="/calendar-view.js" defer></script>
+    <script src="/aiken-integration.js" defer></script>
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="login" id="login" aria-labelledby="login-title" hidden>
+        <form class="login-form" id="login-form">
+          <h1 id="login-title">CourseWorks Secretary</h1>
+          <p class="login-help">Enter the dashboard password chosen during setup.</p>
+          <label for="password">Dashboard password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required>
+          <button type="submit">Enter</button>
+          <p class="form-message" id="login-message" role="alert"></p>
+        </form>
+      </section>
+
+      <section class="timeline-view" id="timeline-view" aria-labelledby="timeline-title" hidden>
+        <header class="timeline-header">
+          <h1 id="timeline-title">CourseWorks timeline</h1>
+          <p id="timeline-summary">Loading…</p>
+          <div class="timeline-actions">
+            <button class="quiet-button" id="sync-button" type="button">Refresh</button>
+            <a class="quiet-button" href="#guide">Course guide</a>
+            <button class="quiet-button" id="logout-button" type="button">Log out</button>
+          </div>
+          <nav class="course-filters" id="course-filters" aria-label="Courses shown on timeline"></nav>
+          <div class="view-switch" role="group" aria-label="Work display">
+            <button type="button" id="all-work-button" aria-pressed="true">Timeline</button>
+            <button type="button" id="calendar-button" aria-pressed="false">Calendar</button>
+            <button type="button" id="graded-work-button" aria-pressed="false">Graded work</button>
+          </div>
+          <p class="sync-message" id="sync-message" aria-live="polite"></p>
+        </header>
+
+        <div class="timeline" id="timeline" aria-live="polite"></div>
+        <section class="calendar" id="calendar" aria-label="Course calendar" hidden>
+          <header class="calendar-toolbar">
+            <button class="calendar-nav-button" id="calendar-previous" type="button" aria-label="Previous month">←</button>
+            <div class="calendar-heading">
+              <h2 id="calendar-month"></h2>
+              <button class="calendar-today-button" id="calendar-today" type="button">Today</button>
+            </div>
+            <button class="calendar-nav-button" id="calendar-next" type="button" aria-label="Next month">→</button>
+          </header>
+          <div class="calendar-weekdays" aria-hidden="true">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+          </div>
+          <div class="calendar-grid" id="calendar-grid" role="grid" aria-labelledby="calendar-month"></div>
+          <section class="calendar-agenda" aria-labelledby="calendar-agenda-title">
+            <h3 id="calendar-agenda-title"></h3>
+            <div id="calendar-agenda-items"></div>
+          </section>
+        </section>
+        <section class="graded-work" id="graded-work" aria-label="Upcoming graded work" aria-live="polite" hidden></section>
+      </section>
+
+      <section class="course-guide-view" id="course-guide-view" aria-labelledby="course-guide-title" hidden>
+        <header class="course-guide-header">
+          <h1 id="course-guide-title">Course guide</h1>
+          <p id="course-guide-summary">Loading…</p>
+          <div class="timeline-actions">
+            <a class="quiet-button" href="#">Timeline</a>
+            <button class="quiet-button logout-button" type="button">Log out</button>
+          </div>
+        </header>
+
+        <nav class="course-guide-tabs" id="course-guide-tabs" role="tablist" aria-label="Courses"></nav>
+        <article class="course-guide-content" id="course-guide-content" role="tabpanel" aria-live="polite"></article>
+      </section>
+    </main>
+  </body>
+</html>

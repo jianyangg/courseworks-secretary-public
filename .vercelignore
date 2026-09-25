@@ -1,0 +1,8 @@
+.env
+.env.local
+.git/
+tests/
+work/
+output/
+__pycache__/
+**/__pycache__/
