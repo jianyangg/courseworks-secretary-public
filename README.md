@@ -1,18 +1,34 @@
 # CourseWorks Secretary
 
-A personal, read-only CourseWorks dashboard for assignments, deadlines, class activity, and a course guide. Each installation connects to **one person's own CourseWorks account**. Your courses are fetched with your own token; this repository contains no account data. The optional **Add to Aiken** link opens [Aiken Dewit](https://aikendewit.com/) with a draft task for your review.
+A private dashboard for your own CourseWorks classes, deadlines, and announcements. It reads your account; it cannot submit or change coursework. **Add to Aiken** opens [Aiken Dewit](https://aikendewit.com/) with a draft task that you can choose to save.
 
-## Set up with an AI agent
+## Easiest setup: ask an AI coding agent
 
-Open this folder in your coding agent and ask:
+You do not need to know how to program. Download this project, open its folder in an AI coding agent such as Codex, and paste this request:
 
-> Set up CourseWorks Secretary for my own CourseWorks account. Explain the steps I must do myself. Keep my token and course data out of Git and chat. Run the tests, then help me run the dashboard locally. Ask me before publishing a deployment.
+> Set up CourseWorks Secretary for me. First get it running on my computer, then ask whether I want a private website. Install what is needed, create the private settings file, guide me through getting my own CourseWorks token and choosing a website password, and verify that my courses load. If I choose a website, help me create my own free Vercel Hobby project and private Blob store, add my settings, deploy, and check that the site requires my password. Never show my token or secrets in chat, Git, screenshots, or logs. Stop before any public deployment so I can approve it.
 
-You must create your own CourseWorks access token in **Account → Settings → Approved Integrations → New Access Token**. Put it in your local `.env` file, never in chat or Git. A web deployment also needs your own Vercel project, private Blob store, password hash, session secret, and cron secret. [Vercel Hobby is free for personal projects](https://vercel.com/docs/plans/hobby), including [Blob within its usage limits](https://vercel.com/docs/vercel-blob/usage-and-pricing). The included cron schedule runs once a day and may run at any time within the scheduled hour. Do not connect another person's Blob store or deployment.
+**What you will do yourself:**
+
+1. Sign in to [CourseWorks](https://courseworks2.columbia.edu/). Open **Account → Settings → Approved Integrations → New Access Token**. Create a token and copy it into the private `.env` file when your agent tells you where. Treat it like a password. Do not paste it into chat.
+2. Choose a password for your dashboard when the setup program prompts you. This is separate from your Columbia password.
+3. If you want a website, sign in to [Vercel](https://vercel.com/) and let the agent guide you through a **new project and private Blob store for your own account**. [Vercel Hobby is free for personal projects](https://vercel.com/docs/plans/hobby), within [its usage limits](https://vercel.com/docs/vercel-blob/usage-and-pricing). You can skip Vercel and use the app only on your computer.
+
+Each installation is for **one person's account**. Whoever knows its dashboard password can see that account's course data. Never share a CourseWorks token or connect another person's Blob store.
+
+## Keeping your courses up to date
+
+The app does **not** need a connected LLM. On the website, sign in and select **Sync** whenever you want fresh data. A Vercel deployment also tries to sync once daily; on the free Hobby plan that job can run at any point within its scheduled hour. For a local copy, ask your agent to refresh it or run `python courseworks.py brief` yourself.
+
+The automatic sync collects CourseWorks assignments, announcements, and links. If you want fuller explanations from syllabi or other course pages, ask your agent:
+
+> Refresh my CourseWorks data and review my current syllabi and course pages. Tell me what needs attention, with source links. Use my local token privately. Show me any proposed course-guide additions before changing the app.
+
+Your agent must have access to this folder and your own CourseWorks account. It should not send your token or private course content to a public repository.
 
 ## Manual setup
 
-Requires Python 3.12. For local setup:
+For people comfortable with a terminal, install Python 3.12 and run:
 
 ```sh
 python3.12 -m venv .venv
@@ -21,26 +37,19 @@ python -m pip install -e .
 python courseworks.py setup
 ```
 
-Put `COURSEWORKS_API_TOKEN=...` in `.env`, then run:
+Add your token after `COURSEWORKS_API_TOKEN=` in `.env`. Then run:
 
 ```sh
 python courseworks.py check
 python courseworks.py web-setup
 python courseworks.py brief
+uvicorn api.index:app --reload
 ```
 
-Run the local FastAPI application with an ASGI server such as `uvicorn api.index:app --reload`. Install the server separately if needed. The dashboard password is set by `web-setup`. The local snapshot and briefing are written under `work/courseworks/`, which is ignored by Git. The course guide is populated from your synced courses, announcements, assignment links, and page links. No example student courses or fixtures are shipped.
+Open `http://localhost:8000` and sign in with the dashboard password you chose. On Windows, activate the virtual environment with `.venv\\Scripts\\activate` instead of `source .venv/bin/activate`.
 
-### Refresh data without connecting an LLM to the app
+For Vercel, create a new project and **private** Blob store. Set `COURSEWORKS_API_TOKEN`, `AUTH_PASSWORD_HASH`, `SESSION_SECRET`, `CRON_SECRET`, and `BLOB_READ_WRITE_TOKEN` from your private `.env` and Blob connection in that project's environment settings. Do not reuse somebody else's deployment or storage. The included daily cron route uses `CRON_SECRET`. [Vercel Hobby allows a daily cron job](https://vercel.com/docs/cron-jobs/usage-and-pricing).
 
-The app does **not** call an LLM. It fetches structured CourseWorks data with your token. For a local refresh, run `python courseworks.py brief`. On the website, sign in and choose **Sync**; a configured Vercel deployment also runs its daily cron sync. If you want an AI agent to read syllabi or other sources, summarize requirements, or refresh data for you when automatic syncing is unavailable, ask it explicitly:
+## Privacy
 
-> Refresh my CourseWorks Secretary data from my own account, review my current course sources, and explain what needs attention. Use my local `.env` token without printing or sending it to chat. Do not publish my course content.
-
-An agent needs access to your local project and your own authenticated CourseWorks account to do that work. Check its proposed summaries before adding them to a personal guide.
-
-For Vercel hosting, create a **new private Blob store** and set your own `COURSEWORKS_API_TOKEN`, `AUTH_PASSWORD_HASH`, `SESSION_SECRET`, `CRON_SECRET`, and `BLOB_READ_WRITE_TOKEN` in that Vercel project. These values are described in `.env.example`. Deploy only after confirming that project and Blob store belong to you. The scheduled `/api/cron` sync uses `CRON_SECRET`; `/api/sync` allows a signed-in manual refresh. One deployment and one password represent one person's account, so anyone with that password can view that account's data.
-
-## Privacy and publication
-
-Snapshots, briefings, `.env*`, Vercel metadata, and local work files must stay outside Git. The Blob store must remain private. Before publishing a fork, inspect both the current files **and Git history** for personal data and secrets. If private material was ever committed, create a fresh repository with clean history instead of changing that repository's visibility.
+The `.env` file, local snapshots, briefings, and Vercel metadata are ignored by Git. The Blob store must stay private. This repository has no student courses or account data. If you later commit personal files or secrets, inspect Git history before making your own repository public; a fresh repository is safer than changing the visibility of one with private history.

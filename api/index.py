@@ -1,5 +1,4 @@
 import hmac
-import os
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
@@ -8,6 +7,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from courseworks_secretary.web.auth import SESSION_TTL, create_session, verify_password, verify_session
 from courseworks_secretary.web.course_guide import build_course_guide
 from courseworks_secretary.web.storage import snapshot_store
+from courseworks_secretary.web.runtime_config import setting
 from courseworks_secretary.web.sync import sync_courseworks
 from courseworks_secretary.web.timeline import build_timeline
 
@@ -74,8 +74,8 @@ def favicon():
 
 @app.post("/api/login")
 async def login(request: Request):
-    configured_hash = os.environ.get("AUTH_PASSWORD_HASH", "")
-    session_secret = os.environ.get("SESSION_SECRET", "")
+    configured_hash = setting("AUTH_PASSWORD_HASH")
+    session_secret = setting("SESSION_SECRET")
     if not configured_hash or not session_secret:
         raise HTTPException(status_code=503, detail="Authentication is not configured")
     try:
@@ -91,7 +91,7 @@ async def login(request: Request):
         create_session(session_secret),
         max_age=int(SESSION_TTL.total_seconds()),
         httponly=True,
-        secure=True,
+        secure=request.url.hostname not in {"localhost", "127.0.0.1"},
         samesite="strict",
     )
     return response
@@ -134,7 +134,7 @@ def sync(request: Request):
 
 @app.get("/api/cron")
 def cron(request: Request):
-    expected = "Bearer " + os.environ.get("CRON_SECRET", "")
+    expected = "Bearer " + setting("CRON_SECRET")
     supplied = request.headers.get("authorization", "")
     if expected == "Bearer " or not hmac.compare_digest(supplied, expected):
         raise HTTPException(status_code=401, detail="Unauthorized")
@@ -146,7 +146,7 @@ def cron(request: Request):
 
 
 def _require_authentication(request: Request) -> None:
-    secret = os.environ.get("SESSION_SECRET", "")
+    secret = setting("SESSION_SECRET")
     token = request.cookies.get(SESSION_COOKIE, "")
     if not secret or not verify_session(token, secret):
         raise HTTPException(status_code=401, detail="Authentication required")
