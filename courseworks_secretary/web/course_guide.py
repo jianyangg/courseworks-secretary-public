@@ -4,9 +4,14 @@ from datetime import datetime, timezone
 from typing import Any, Dict
 
 from .synced_guide import add_synced_course_data
+from .private_guide import load_private_guide
 
 
 def build_course_guide(snapshot: Dict[str, Any] | None = None) -> Dict[str, Any]:
+    private_guide = load_private_guide()
+    if private_guide is not None:
+        return add_synced_course_data(private_guide, snapshot)
+
     courses = []
     for course in (snapshot or {}).get("courses") or []:
         course_id = course.get("id")

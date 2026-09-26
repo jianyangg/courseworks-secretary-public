@@ -9,6 +9,7 @@ from .config import BASE_URL, BRIEFING_PATH, SNAPSHOT_PATH
 from .credentials import MissingCredentialError, initialize_env_file, load_token
 from .http import CanvasRequestError, JsonTransport
 from .web.setup import configure_web_secrets
+from .web.private_guide import upload_private_guide
 
 
 def main() -> int:
@@ -17,6 +18,7 @@ def main() -> int:
     subparsers.add_parser("setup", help="Create a private local token file")
     subparsers.add_parser("web-setup", help="Configure the private timeline password")
     subparsers.add_parser("check", help="Verify the stored token")
+    subparsers.add_parser("guide-upload", help="Upload a reviewed private guide to your Blob store")
     collect_parser = subparsers.add_parser("collect", help="Refresh the local snapshot")
     collect_parser.add_argument("--snapshot", type=Path, default=SNAPSHOT_PATH)
     brief_parser = subparsers.add_parser("brief", help="Refresh and render a briefing")
@@ -33,6 +35,11 @@ def main() -> int:
         if args.command == "web-setup":
             configure_web_secrets()
             print("Web password hash, session secret, and cron secret saved to .env.")
+            return 0
+
+        if args.command == "guide-upload":
+            upload_private_guide()
+            print("Private course guide uploaded to your Blob store.")
             return 0
 
         client = _client()
