@@ -192,6 +192,8 @@ h1 {
 
 .view-switch {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 3px;
   margin-top: 16px;
   padding: 3px;
@@ -686,6 +688,13 @@ h1 {
 
 .task-time {
   white-space: nowrap;
+}
+
+.task-copy .preparation-time {
+  display: block;
+  margin-top: 5px;
+  white-space: normal;
+  line-height: 1.35;
 }
 
 .task-row-actions {

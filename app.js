@@ -8,6 +8,8 @@ const gradedWork = document.getElementById('graded-work');
 const allWorkButton = document.getElementById('all-work-button');
 const calendarButton = document.getElementById('calendar-button');
 const gradedWorkButton = document.getElementById('graded-work-button');
+const assessmentsButton = document.getElementById('assessments-button');
+const assessments = document.getElementById('assessments');
 const calendar = document.getElementById('calendar');
 const calendarMonth = document.getElementById('calendar-month');
 const calendarGrid = document.getElementById('calendar-grid');
@@ -141,7 +143,13 @@ function createTask(task) {
   time.className = 'task-time';
   time.dateTime = task.dueAt;
   time.textContent = task.time;
-  row.append(copy, time);
+  if (task.isPreparation) {
+    time.classList.add('preparation-time');
+    copy.append(time);
+    row.append(copy);
+  } else {
+    row.append(copy, time);
+  }
 
   const links = task.links?.length ? task.links : (task.url ? [{ label: task.sourceLabel || 'Source', url: task.url }] : []);
   const aikenLink = createAikenTaskLink(task);
@@ -601,9 +609,12 @@ function setDisplayMode(mode) {
   timeline.hidden = mode !== 'timeline';
   calendar.hidden = !calendarVisible;
   gradedWork.hidden = !graded;
+  assessments.hidden = mode !== 'assessments';
+  courseFilters.hidden = mode === 'assessments' || !(timelineData?.courses || []).length;
   allWorkButton.setAttribute('aria-pressed', String(mode === 'timeline'));
   calendarButton.setAttribute('aria-pressed', String(calendarVisible));
   gradedWorkButton.setAttribute('aria-pressed', String(graded));
+  assessmentsButton.setAttribute('aria-pressed', String(mode === 'assessments'));
   if (timelineData) renderVisibleWork();
 }
 
@@ -615,6 +626,8 @@ function renderVisibleWork() {
   if (displayMode === 'graded') {
     const count = GradedWork.gradedTasks(visible).length;
     timelineSummary.textContent = `${count} upcoming graded ${count === 1 ? 'item' : 'items'} · ${formatUpdated(visible.generatedAt)}`;
+  } else if (displayMode === 'assessments') {
+    timelineSummary.textContent = `Exams and final projects by course · ${formatUpdated(visible.generatedAt)}`;
   }
 }
 
@@ -654,7 +667,7 @@ function renderCourseFilters(focusCourseKey) {
     if (course.key === focusCourseKey) buttonToFocus = button;
     courseFilters.append(button);
   });
-  courseFilters.hidden = !(timelineData.courses || []).length;
+  courseFilters.hidden = displayMode === 'assessments' || !(timelineData.courses || []).length;
   if (buttonToFocus) buttonToFocus.focus();
 }
 
@@ -677,6 +690,11 @@ function render(data) {
 allWorkButton.addEventListener('click', () => setDisplayMode('timeline'));
 calendarButton.addEventListener('click', () => setDisplayMode('calendar'));
 gradedWorkButton.addEventListener('click', () => setDisplayMode('graded'));
+assessmentsButton.addEventListener('click', async () => {
+  setDisplayMode('assessments');
+  await loadCourseGuide();
+  AssessmentOverview.render(guideData);
+});
 
 function moveCalendar(offset) {
   const shifted = CalendarView.shiftMonth(calendarYear, calendarMonthIndex, offset);

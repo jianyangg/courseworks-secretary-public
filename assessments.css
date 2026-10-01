@@ -1,0 +1,64 @@
+.assessments {
+  margin: 0 auto 20px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.assessments-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.assessments h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.assessments-heading a {
+  flex: none;
+  font-size: 0.8rem;
+}
+
+.assessments-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+  gap: 8px;
+}
+
+.assessments-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+
+.assessments-grid strong {
+  font-size: 0.85rem;
+}
+
+.assessments details {
+  margin-top: 12px;
+  font-size: 0.8rem;
+}
+
+.assessments summary {
+  cursor: pointer;
+}
+
+.assessments ul {
+  margin: 10px 0 0;
+  padding-left: 20px;
+}
+
+.assessments li + li {
+  margin-top: 8px;
+}

@@ -7,10 +7,12 @@
     <title>CourseWorks Secretary</title>
     <link rel="icon" href="/favicon.svg?v=3" type="image/svg+xml">
     <link rel="stylesheet" href="/app.css">
+    <link rel="stylesheet" href="/assessments.css">
     <script src="/timeline-filters.js" defer></script>
     <script src="/graded-work.js" defer></script>
     <script src="/calendar-view.js" defer></script>
     <script src="/aiken-integration.js" defer></script>
+    <script src="/assessment-overview.js" defer></script>
     <script src="/app.js" defer></script>
   </head>
   <body>
@@ -40,9 +42,19 @@
             <button type="button" id="all-work-button" aria-pressed="true">Timeline</button>
             <button type="button" id="calendar-button" aria-pressed="false">Calendar</button>
             <button type="button" id="graded-work-button" aria-pressed="false">Graded work</button>
+            <button type="button" id="assessments-button" aria-pressed="false">Exams &amp; projects</button>
           </div>
           <p class="sync-message" id="sync-message" aria-live="polite"></p>
         </header>
+
+        <section class="assessments" id="assessments" aria-labelledby="assessments-title" hidden>
+          <div class="assessments-heading">
+            <h2 id="assessments-title">Exams &amp; final projects</h2>
+            <a href="#guide">Course details</a>
+          </div>
+          <div class="assessments-grid" id="assessments-grid"></div>
+          <p id="assessments-empty">Ask your AI assistant to add reviewed exams and major projects to your private course guide.</p>
+        </section>
 
         <div class="timeline" id="timeline" aria-live="polite"></div>
         <section class="calendar" id="calendar" aria-label="Course calendar" hidden>

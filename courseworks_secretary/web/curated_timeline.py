@@ -14,10 +14,6 @@ def curated_tasks(guide: Dict[str, Any]) -> List[Dict[str, Any]]:
         for section in course.get("sections") or []:
             for item in section.get("items") or []:
                 tasks.extend(_tasks_for_item(course, item, section=section))
-        for meeting in course.get("meetings") or []:
-            task = _task_for_meeting(course, meeting)
-            if task:
-                tasks.append(task)
     return tasks
 
 
@@ -81,44 +77,6 @@ def _tasks_for_item(
             }
         )
     return tasks
-
-
-def _task_for_meeting(
-    course: Dict[str, Any], meeting: Dict[str, Any]
-) -> Dict[str, Any] | None:
-    start_time = meeting.get("startTime")
-    due = _due_at(meeting.get("date"), start_time)
-    if due is None:
-        return None
-    location = meeting.get("location") or "Location TBD"
-    return {
-        "title": "Class · {}".format(location),
-        "course": course.get("title") or course.get("shortTitle") or "Course",
-        "courseAliases": [
-            value
-            for value in (
-                course.get("title"),
-                course.get("shortTitle"),
-                course.get("colorKey"),
-            )
-            if value
-        ],
-        "colorKey": course.get("colorKey") or course.get("title"),
-        "due": due,
-        "timeLabel": _time_range(start_time, meeting.get("endTime")),
-        "url": _safe_source_url(course.get("courseUrl") or course.get("sourceUrl")),
-        "sourceLabel": "Class schedule",
-        "kind": "meeting",
-    }
-
-
-def _time_range(start_time: str, end_time: Any) -> str:
-    if not isinstance(end_time, str):
-        return start_time
-    start_suffix = start_time.rsplit(" ", 1)[-1]
-    end_suffix = end_time.rsplit(" ", 1)[-1]
-    compact_start = start_time.rsplit(" ", 1)[0] if start_suffix == end_suffix else start_time
-    return "{}–{}".format(compact_start, end_time)
 
 
 def _due_at(value: Any, time_label: str) -> datetime | None:

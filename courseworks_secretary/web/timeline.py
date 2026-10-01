@@ -64,8 +64,7 @@ def build_timeline(
                 or planner_type == "announcement"
             ):
                 continue
-            is_meeting = planner_type == "calendar_event"
-            if not is_meeting and planner_type not in ACTIONABLE_PLANNER_TYPES:
+            if planner_type not in ACTIONABLE_PLANNER_TYPES:
                 continue
             source_url = safe_courseworks_url(planner_item.get("html_url"))
             candidate = {
@@ -78,10 +77,8 @@ def build_timeline(
                 "due": due,
                 "url": source_url,
                 "links": assignment_links(source_url, planner_item.get("external_links")),
-                "sourceLabel": (
-                    "CourseWorks calendar" if is_meeting else "CourseWorks planner"
-                ),
-                "kind": "meeting" if is_meeting else "task",
+                "sourceLabel": "CourseWorks planner",
+                "kind": "task",
                 "typeLabel": _planner_type_label(planner_type),
                 "isGraded": False,
             }
@@ -95,10 +92,23 @@ def build_timeline(
             matching = _matching_task(curated, tasks)
             if matching is not None:
                 _merge_links(matching, curated)
+                if curated.get("isPreparation"):
+                    matching["isPreparation"] = True
                 if curated.get("isGraded") is not None:
                     matching["isGraded"] = curated["isGraded"] is True
                 continue
             tasks.append(curated)
+    for task in tasks:
+        if _is_preparation(task):
+            deadline = task["due"].astimezone(EASTERN)
+            task["deadlineAt"] = task["due"].isoformat()
+            task["deadlineIsDateOnly"] = task.get("timeLabel") == "Date only"
+            task["due"] = (deadline - timedelta(days=1)).replace(
+                hour=19, minute=0, second=0, microsecond=0
+            )
+            task["timeLabel"] = "7:00 PM · Start preparation · {}".format(
+                _deadline_label(deadline, current)
+            )
     tasks.sort(key=_timeline_sort_key)
 
     groups: List[Dict[str, Any]] = []
@@ -123,6 +133,8 @@ def build_timeline(
                 "colorKey": task["colorKey"],
                 "time": task.get("timeLabel") or local_due.strftime("%-I:%M %p"),
                 "dueAt": task["due"].isoformat(),
+                "deadlineAt": task.get("deadlineAt"),
+                "deadlineIsDateOnly": task.get("deadlineIsDateOnly", False),
                 "isPast": task["due"] < current,
                 "isLater": task["due"] - current > WINDOW,
                 "state": _state(task["due"], current),
@@ -211,6 +223,17 @@ def _status_label(due: datetime, now: datetime) -> str:
     return "In {} days".format(days)
 
 
+def _deadline_label(deadline: datetime, now: datetime) -> str:
+    days = (deadline.astimezone(EASTERN).date() - now.astimezone(EASTERN).date()).days
+    if days < 0:
+        return "Past due"
+    if days == 0:
+        return "Due today"
+    if days == 1:
+        return "Due tomorrow"
+    return "{} days left".format(days)
+
+
 def _clean_title(value: str) -> str:
     return re.sub(r"\s*\bFA\d{4}\b\s*", " ", value, flags=re.IGNORECASE).strip()
 
@@ -228,12 +251,6 @@ def _matching_task(candidate: Dict[str, Any], tasks: List[Dict[str, Any]]) -> Di
         )
         if not same_course:
             continue
-        if (
-            candidate.get("kind") == "meeting"
-            and task.get("kind") == "meeting"
-            and candidate["due"] == task["due"]
-        ):
-            return task
         if (
             _comparison_key(task["title"]) == candidate_title
             and task["due"].astimezone(EASTERN).date() == candidate_date
@@ -271,7 +288,6 @@ def _planner_type_label(value: Any) -> str:
     labels = {
         "assignment": "Assignment",
         "assessment_request": "Assessment",
-        "calendar_event": "Class event",
         "discussion_topic": "Discussion",
         "peer_review_sub_assignment": "Peer review",
         "planner_note": "Planner item",
@@ -294,9 +310,7 @@ def _is_preparation(task: Dict[str, Any]) -> bool:
 
 
 def _timeline_sort_key(task: Dict[str, Any]) -> tuple:
-    if task.get("kind") == "meeting":
-        priority = 2
-    elif _is_preparation(task):
+    if _is_preparation(task):
         priority = 0
     else:
         priority = 1

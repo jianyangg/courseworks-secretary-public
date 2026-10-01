@@ -27,11 +27,12 @@
   }
 
   function taskDueDate(task) {
-    if (!task.dueAt) return '';
+    const deadline = task.deadlineAt || task.dueAt;
+    if (!deadline) return '';
     // Curated date-only entries use 11:59 PM for timeline ordering. Do not
     // present that synthetic time as a real deadline in Aiken.
-    if (task.time === 'Date only') return String(task.dueAt).slice(0, 10);
-    return String(task.dueAt);
+    if (task.deadlineIsDateOnly || task.time === 'Date only') return String(deadline).slice(0, 10);
+    return String(deadline);
   }
 
   function buildTaskUrl(task, baseUrl = AIKEN_APP_URL) {

@@ -42,6 +42,16 @@ def styles():
     return FileResponse(ROOT / "app.css", media_type="text/css")
 
 
+@app.get("/assessments.css")
+def assessment_styles():
+    return FileResponse(ROOT / "assessments.css", media_type="text/css")
+
+
+@app.get("/assessment-overview.js")
+def assessment_script():
+    return FileResponse(ROOT / "assessment-overview.js", media_type="text/javascript")
+
+
 @app.get("/app.js")
 def script():
     return FileResponse(ROOT / "app.js", media_type="text/javascript")

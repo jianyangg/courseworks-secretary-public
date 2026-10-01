@@ -42,3 +42,5 @@ The file is JSON with a review timestamp and a `courses` array. Each course need
 ```
 
 Dated `items` can appear on the timeline. Undated facts should stay in the guide. Add `deadlineTime` only when a source specifies a time. Keep summaries brief and link to the source. Review conflicts with the user instead of guessing. Once approved, run `python courseworks.py guide-upload` to update the private website copy.
+
+For reviewed exams and major projects, set `showInAssessmentOverview: true` on their section items to include them in the Exams & projects view. Preparation reminders appear at 7 PM the preceding day, with the actual deadline retained separately. Regular class meetings are omitted from the task timeline.
