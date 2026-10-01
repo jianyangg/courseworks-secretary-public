@@ -13,9 +13,10 @@ python -m pip install -e .
 python courseworks.py setup
 ```
 
-Add your token after `COURSEWORKS_API_TOKEN=` in `.env`. Then run:
+Enter the token through the hidden prompt; setup saves it in `.env` with owner-only permissions. Run these commands in an interactive terminal:
 
 ```sh
+python courseworks.py token-setup
 python courseworks.py check
 python courseworks.py web-setup
 python courseworks.py brief
@@ -29,3 +30,7 @@ For Vercel, create a new project and **private** Blob store. If you have an appr
 ## Privacy
 
 The `.env` file, local snapshots, briefings, and Vercel metadata are ignored by Git. The Blob store must stay private. This repository has no student courses or account data. If you later commit personal files or secrets, inspect Git history before making your own repository public; a fresh repository is safer than changing the visibility of one with private history.
+
+## Guidance for agents
+
+Let the user enter the token and dashboard password directly in an interactive terminal. Do not collect them through chat or tool arguments. Explain hidden typing before each prompt. Transfer the resulting settings to the user’s own Vercel project using private input without displaying values. The Vercel sign-in happens in the user’s browser. Use the generated password hash and secrets; do not ask the user to invent them. Changing the dashboard password also generates new session and cron secrets, so update all three website settings together.

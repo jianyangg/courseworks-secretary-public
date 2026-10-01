@@ -9,6 +9,7 @@ from .config import BASE_URL, BRIEFING_PATH, SNAPSHOT_PATH
 from .credentials import MissingCredentialError, initialize_env_file, load_token
 from .http import CanvasRequestError, JsonTransport
 from .web.setup import configure_web_secrets
+from .token_setup import configure_token
 from .web.private_guide import upload_private_guide
 
 
@@ -16,6 +17,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Private CourseWorks briefing collector")
     subparsers = parser.add_subparsers(dest="command", required=True)
     subparsers.add_parser("setup", help="Create a private local token file")
+    subparsers.add_parser("token-setup", help="Privately enter your CourseWorks access code")
     subparsers.add_parser("web-setup", help="Configure the private timeline password")
     subparsers.add_parser("check", help="Verify the stored token")
     subparsers.add_parser("guide-upload", help="Upload a reviewed private guide to your Blob store")
@@ -30,6 +32,11 @@ def main() -> int:
         if args.command == "setup":
             initialize_env_file()
             print("Ready: add your token to .env as COURSEWORKS_API_TOKEN=...")
+            return 0
+
+        if args.command == "token-setup":
+            configure_token()
+            print("Access code saved privately. You do not need to enter it each time.")
             return 0
 
         if args.command == "web-setup":
