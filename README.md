@@ -1,8 +1,8 @@
 # CourseWorks Secretary
 
-See your CourseWorks deadlines, preparation, announcements, and course instructions in one private dashboard. It reads your own Columbia account and cannot submit or change coursework.
+Turn your AI coding assistant, such as Codex, into a **personal secretary for your classwork**. Give it access to your own CourseWorks account and course materials, then ask it what to work on today, what to prepare before class, how to submit an assignment, or what changed in the latest announcements. It can read across syllabi, documents, and messages, bring the instructions together, and keep a private dashboard of your deadlines and course guide—so you spend less time hunting for requirements and more time doing the work.
 
-**There are two parts to getting useful results:** the app collects assignments and dates from CourseWorks, and your AI coding assistant reads course documents to build the fuller course guide. For example, it can find homework mentioned in an announcement before the instructor adds it to the assignment list.
+The dashboard collects assignments and dates from CourseWorks. Your assistant does the reading and planning when you ask: it can catch homework mentioned only in an announcement, explain submission requirements, flag conflicting deadlines, and propose a prioritized plan with source links. You review its proposed guide changes before they are applied. The dashboard reads your account and cannot submit or change coursework; it does not run the assistant automatically.
 
 ## Start here — no programming knowledge needed
 
