@@ -21,33 +21,6 @@ function createTask(task) {
   }
   course.textContent = metadata.join(' · ');
   copy.append(title, course);
-  if (task.detail || task.deadlineConflict || task.guideTitle) {
-    const disclosure = document.createElement('details');
-    disclosure.className = 'task-detail';
-    const summary = document.createElement('summary');
-    summary.textContent = task.deadlineConflict ? 'Check deadline' : 'Details';
-    if (task.deadlineConflict) {
-      summary.className = 'deadline-notice';
-      const conflict = document.createElement('p');
-      const format = value => new Intl.DateTimeFormat('en-US', {
-        dateStyle: 'medium', timeStyle: 'short', timeZone: timelineData?.timeZone || 'America/New_York',
-      }).format(new Date(value));
-      conflict.textContent = `Canvas lists ${format(task.deadlineConflict.synced)}; the reviewed guide lists ${format(task.deadlineConflict.reviewed)}. Check the sources. The timeline uses the Canvas deadline.`;
-      disclosure.append(summary, conflict);
-    } else disclosure.append(summary);
-    if (task.guideTitle) {
-      const guideTitle = document.createElement('p');
-      guideTitle.textContent = `Reviewed guide: ${task.guideTitle}`;
-      disclosure.append(guideTitle);
-    }
-    if (task.detail) {
-      const detail = document.createElement('p');
-      detail.textContent = task.detail;
-      disclosure.append(detail);
-    }
-    copy.append(disclosure);
-  }
-
   const time = document.createElement('time');
   time.className = 'task-time';
   time.dateTime = task.dueAt;
@@ -59,6 +32,8 @@ function createTask(task) {
   } else {
     row.append(copy, time);
   }
+  const disclosure = createTaskDetails(task, timelineData?.timeZone);
+  if (disclosure) copy.append(disclosure);
 
   const links = safeSourceRecords(task.links?.length ? task.links : (task.url ? [{ label: task.sourceLabel || 'Source', url: task.url }] : []));
   const aikenLink = createAikenTaskLink(task);

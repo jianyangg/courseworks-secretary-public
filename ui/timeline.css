@@ -200,7 +200,7 @@
 .task-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
-  align-items: center;
+  align-items: start;
   gap: 8px 12px;
   min-height: 48px;
   padding: 9px 0 11px;
@@ -244,7 +244,7 @@
 }
 
 .task-course {
-  margin-top: 3px;
+  margin: 3px 0 0 17px;
   line-height: 1.35;
 }
 
@@ -252,9 +252,13 @@
   white-space: nowrap;
 }
 
+.task-row > .task-time {
+  padding-top: 3px;
+}
+
 .task-copy .preparation-time {
   display: block;
-  margin-top: 5px;
+  margin: 5px 0 0 17px;
   white-space: normal;
   line-height: 1.35;
 }

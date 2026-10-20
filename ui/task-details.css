@@ -1,0 +1,99 @@
+.task-detail {
+  margin: 9px 0 0 17px;
+}
+
+.task-detail > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+  list-style: none;
+  cursor: pointer;
+  transition: color 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.task-detail > summary::-webkit-details-marker {
+  display: none;
+}
+
+.task-detail > summary::marker {
+  content: '';
+}
+
+.task-detail > summary:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+  color: var(--text);
+}
+
+.task-detail[open] > summary {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.task-detail-label-open,
+.task-detail[open] .task-detail-label-closed {
+  display: none;
+}
+
+.task-detail[open] .task-detail-label-open {
+  display: inline;
+}
+
+.task-detail-chevron {
+  display: flex;
+  width: 14px;
+  height: 14px;
+  transition: transform 140ms ease;
+}
+
+.task-detail[open] .task-detail-chevron {
+  transform: rotate(180deg);
+}
+
+.task-detail-content {
+  margin-top: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.task-detail-content p {
+  max-width: 65ch;
+  margin: 0;
+  white-space: pre-line;
+}
+
+.task-detail-content p + p {
+  margin-top: 10px;
+}
+
+.task-detail-content .task-detail-guide-title {
+  color: var(--muted);
+}
+
+.task-detail-conflict > summary,
+.task-detail-conflict[open] > summary,
+.task-detail-content .deadline-notice {
+  color: var(--soon);
+}
+
+@media (hover: none) {
+  .task-detail > summary {
+    min-height: 36px;
+    padding-inline: 10px;
+  }
+}

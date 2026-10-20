@@ -130,29 +130,6 @@ body[data-preview] .later-tasks { display: none; }
   line-height: 1.45;
 }
 
-.task-detail {
-  margin-top: 6px;
-  color: var(--muted);
-  font-size: 0.8rem;
-  line-height: 1.6;
-}
-
-.task-detail summary {
-  width: fit-content;
-  cursor: pointer;
-  font-size: 0.75rem;
-}
-
-.task-detail p {
-  max-width: 65ch;
-  margin: 8px 0;
-  white-space: pre-line;
-}
-
-.deadline-notice {
-  color: var(--soon);
-}
-
 .guide-source-section {
   padding: 16px 0;
   border-top: 1px solid var(--line);
