@@ -1,4 +1,4 @@
-# Personal installation
+# Technical setup reference
 
 Each installation uses one owner's Canvas account. Local use comes first; personal hosting is optional.
 
@@ -23,14 +23,14 @@ Open [the fictional demo](http://127.0.0.1:8000/demo). Stop the server with Ctrl
 python courseworks.py setup
 ```
 
-This creates an owner-readable `.env`. Set these non-secret values there for the institution:
+This creates a private settings file called `.env`. Set your school's Canvas address and timezone there:
 
 ```dotenv
 CANVAS_BASE_URL=https://school.instructure.com
 CANVAS_TIMEZONE=America/New_York
 ```
 
-Use an HTTPS Canvas origin without a path, query, or credentials. Use an IANA timezone such as `America/New_York`, `Europe/London`, or `Asia/Singapore`. The defaults are Columbia CourseWorks and New York time. Changing these settings requires restarting the server.
+Use just the `https://school.instructure.com` part of your Canvas address. Use a timezone name such as `America/New_York`, `Europe/London`, or `Asia/Singapore`. The defaults are Columbia CourseWorks and New York time. Restart the server after changing these settings.
 
 Use the institution's permitted authentication method. The token helper supports an owner's personal development/testing credentials; it does not implement OAuth registration for a shared application. Token creation may be disabled by the institution. [Canvas documents the access requirements](https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth).
 
@@ -44,7 +44,7 @@ python courseworks.py brief
 python -m uvicorn api.index:app --host 127.0.0.1 --port 8000
 ```
 
-Open [the local dashboard](http://127.0.0.1:8000/) and use the chosen dashboard password. Use at least eight characters and a different password from the institution account. The app stores a password verification value. It permits a non-Secure session cookie only on localhost/127.0.0.1; remote hosting requires HTTPS.
+Open [the dashboard on your computer](http://127.0.0.1:8000/) and enter the password you chose. Use at least eight characters and a different password from your school account. Use HTTPS for any online copy.
 
 The token is stored in `.env` with owner-only permissions. The app does not need it to render the demo. Never put it into chat, command arguments, tracked files, screenshots, or issue reports. If exposed, revoke it through Canvas and replace it.
 

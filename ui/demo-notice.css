@@ -37,6 +37,13 @@
   line-height: 1.6;
 }
 
+.demo-notice-platform {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
 .demo-notice-actions {
   display: grid;
   flex-shrink: 0;

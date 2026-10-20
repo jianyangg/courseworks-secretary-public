@@ -1,31 +1,29 @@
-# Make CourseWorks Secretary useful for your courses
+# Make this dashboard useful for your courses
 
-The example dashboard uses fictional courses. Use this project with ChatGPT to organize your own deadlines and distill scattered course instructions into the essentials.
+Canvas is the course platform. Schools may use another name for it; Columbia calls it [CourseWorks](https://courseworks.columbia.edu/about.html).
 
-## Set up the dashboard with ChatGPT Work
+## Set it up with ChatGPT
 
-Use **Work in the ChatGPT desktop app**, with access to the project folder and approved local tools. Availability and allowed tools vary by account. See the official [local project guide](https://learn.chatgpt.com/docs/projects#use-local-projects-for-folders-and-codebases) and [Work guide](https://learn.chatgpt.com/docs/get-started-with-work).
+Use **Work in the ChatGPT desktop app**. It needs permission to use the project folder and local tools. Availability varies by account. [Official guide](https://learn.chatgpt.com/docs/projects#use-local-projects-for-folders-and-codebases).
 
-1. **Download the project.** Open [the GitHub project](https://github.com/jianyangg/courseworks-secretary-public), select **Code → Download ZIP**, and unzip it into a folder you can find.
-2. **Open that folder in ChatGPT.** In the desktop app, add the downloaded folder as a local project. Start a ChatGPT **Work** task with access to that folder and the local tools needed for setup.
-3. **Paste this request:**
+1. **Get the files.** Open [the project on GitHub](https://github.com/jianyangg/courseworks-secretary-public). Click **Code → Download ZIP**. Unzip it to make a regular folder; on Windows, choose **Extract All**.
+2. **Open the folder in ChatGPT.** Add it as a local project, then start a **Work** chat. This lets ChatGPT read the project files.
+3. **Copy this request:**
 
-> Help me set up CourseWorks Secretary for my courses. Read GET_STARTED.md, README.md, and TECHNICAL_SETUP.md. Check what my computer needs, handle the technical steps, and start with the fictional demo. Help me connect Canvas using my school's permitted access method and enter credentials through private local prompts. Then follow COURSE_GUIDE_UPDATE.md to review the course sources I authorize and distill the important requirements and deadlines into my private guide. Show source links and conflicts for review before applying changes. Keep credentials and personal course content out of Git.
+> Help me set up this course dashboard using TECHNICAL_SETUP.md. Start with the example. Help me connect my Canvas account using a method my school allows. Keep secrets out of chat and public files. Then follow COURSE_GUIDE_UPDATE.md to turn my course materials into a short, useful guide. Show the sources and anything unclear before saving it.
 
-4. **Follow the setup prompts.** ChatGPT can explain the steps and help with installation. Enter account secrets through the local setup prompts. Once your courses load, ask it to review the full syllabi, assignment instructions, announcements, and other authorized sources.
+Follow ChatGPT's steps. Enter access keys only through the private setup prompt it opens. An access key is a secret that lets the app read your courses; treat it like a password.
 
-## Start with a course brief instead
+## Only need a course guide?
 
-Add syllabi, assignment instructions, announcements, and accessible course links to a ChatGPT chat or [project](https://learn.chatgpt.com/docs/projects). Ask:
+Add your syllabi and course instructions to ChatGPT and ask:
 
-> Read these course materials and create a short course-by-course brief. Include only what affects my work or grade: deadlines, grading weights, submission requirements, preparation, and key rules. Merge repeated instructions, distinguish optional advice, link each requirement to its source, and flag conflicts or missing information. Do not invent dates or requirements.
+> Summarize what I must do for each course: deadlines, grading, required submissions, preparation, and important rules. Link the sources and flag missing or conflicting information.
 
-This produces a brief from the supplied sources. A running dashboard and live Canvas syncing require the project setup above.
+This creates a brief from your materials. The dashboard and Canvas syncing need the setup above.
 
-## Can I use ChatGPT Sites?
+## What about Sites?
 
-Sites can build and host dashboards inside ChatGPT. This Python/FastAPI application has not been validated there, so ask ChatGPT to assess compatibility and required changes before adapting it. Check who can access the course data and how updates work. See [creating a Site](https://learn.chatgpt.com/docs/sites/creating-a-site) and [data and hosting features](https://learn.chatgpt.com/docs/sites/data-and-connections).
+[ChatGPT Sites](https://learn.chatgpt.com/docs/sites/creating-a-site) can build dashboards, but this app has not been tested there. Ask ChatGPT to check what needs adapting first.
 
-## Other setup options
-
-Codex and Claude Code can use the same setup request. For commands and optional personal hosting, follow [technical setup](TECHNICAL_SETUP.md).
+The [technical reference](TECHNICAL_SETUP.md) covers commands and online hosting. Codex and Claude Code can also use this project.

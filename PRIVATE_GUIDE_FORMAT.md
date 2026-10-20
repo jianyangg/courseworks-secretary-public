@@ -1,5 +1,7 @@
 # Private course guide
 
+For everyday use, follow [the short course-review guide](COURSE_GUIDE_UPDATE.md). This page explains the file format for ChatGPT or anyone editing the saved guide.
+
 Store the approved guide at `work/courseworks/course-guide.json`. The directory is ignored by Git and deployment packaging. Keep personal course content and study materials outside tracked project files.
 
 The guide is a distilled course brief. Use [COURSE_GUIDE_UPDATE.md](COURSE_GUIDE_UPDATE.md) to review all relevant sources and extract the essential requirements before filling this format. Keep undated grading, submission, and policy facts alongside dated actions.

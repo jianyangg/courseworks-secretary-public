@@ -10,9 +10,11 @@ The release organizes accessible coursework and a private reviewed guide through
 - Local HTTP and browser rendering returned the synthetic timeline and all referenced assets. The browser's Exams & projects view displayed the reviewed sample assessments with source links.
 - The instructions control opens by click, closes with Space, and reopens with Enter. Its label and chevron reflect the open state, while the task deadline stays in place.
 - The demo banner identifies the example data and leads to a beginner guide for ChatGPT. Its local documentation links resolve, and the affected HTTP/static-asset route checks pass.
+- Public branding uses Canvas / CourseWorks Secretary. The banner and setup documentation explain that schools may use local names for Canvas, with Columbia's CourseWorks as the example.
+- Beginner instructions use short steps, a copyable request, and plain explanations. Course-review instructions focus on essential requirements; detailed commands and file formats are separate references.
 - A focused scan of release files and 70 historical public text blobs found no matches for Canvas-token/private-key patterns or known private course/student identifiers. This is a scoped check, not a comprehensive security audit.
 - The preview is a 1600 × 1000 opaque PNG on a solid background with crop padding, below the 20 MB limit. It contains fictional coursework only.
-- The Showcase description is 402 characters, including spaces and punctuation.
+- The Showcase description is 411 characters, including spaces and punctuation.
 
 The sample course guide includes distilled grading, submission requirements, preparation, and course rules across fictional syllabi, assignment pages, and announcements. Its source links identify the corresponding sample context. The public course-review playbook describes how a coding assistant compiles the same kind of brief from an owner's authorized sources.
 
