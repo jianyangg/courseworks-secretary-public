@@ -81,4 +81,3 @@ function createTask(task) {
   }
   return row;
 }
-
