@@ -5,7 +5,7 @@ The release organizes accessible coursework and a private reviewed guide through
 ## Evidence
 
 - A new Python 3.12 environment installed the public project and its test dependencies successfully. Package discovery explicitly includes application packages and excludes interface/data directories.
-- All 41 public Python tests passed in the fresh environment. They cover task identity, submission state, preparation, source handling, host/timezone configuration, safe pagination, private guide validation, demo isolation, protected routes, and static assets.
+- All 42 public Python tests passed in the fresh environment. They cover task identity, submission state, preparation, source handling, host/timezone configuration, safe pagination, private guide validation, demo isolation, protected routes, and static assets.
 - All 23 Node checks passed. They cover filtering, calendar calculations, graded deadlines, Aiken handoffs, assessment grouping/rendering, and recoverable API failures.
 - Local HTTP and browser rendering returned the synthetic timeline and all referenced assets. The browser's Exams & projects view displayed the reviewed sample assessments with source links.
 - A focused scan of release files and 70 historical public text blobs found no matches for Canvas-token/private-key patterns or known private course/student identifiers. This is a scoped check, not a comprehensive security audit.

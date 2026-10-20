@@ -78,6 +78,9 @@ def matching_task(candidate: dict, tasks: list, zone) -> dict | None:
         first, second = candidate.get("recordKey"), task.get("recordKey")
         if first and second:
             if first == second:
+                if ((candidate.get("occurrenceDate") or task.get("occurrenceDate"))
+                        and candidate["due"].astimezone(zone).date() != task["due"].astimezone(zone).date()):
+                    continue
                 return task
             continue
         first_course, second_course = candidate.get("courseKey"), task.get("courseKey")
@@ -128,4 +131,6 @@ def stable_task_id(task: dict) -> str:
         task.get("courseKey") or task["course"], task["title"], task["due"].isoformat(),
     ))
     identity += ":preparation" if is_preparation(task) else ":deadline"
+    if task.get("occurrenceDate"):
+        identity += ":" + task["occurrenceDate"]
     return hashlib.sha256(identity.encode()).hexdigest()[:24]

@@ -119,6 +119,18 @@ class TaskIdentityTests(unittest.TestCase):
         self.assertEqual(task["time"], "EOD")
         self.assertTrue(task["deadlineIsDateOnly"])
 
+    def test_recurring_guide_work_sharing_a_source_keeps_each_occurrence(self):
+        self.snapshot["courses"][0]["assignments"][0]["submitted"] = True
+        self.item["title"] = "Homework 3"
+        self.item["occurrences"] = [{"dueOn": "2026-11-01"}, {"dueOn": "2026-11-08"}]
+        rows = self.rows()
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["dueAt"], "2026-11-08T23:59:00-05:00")
+        self.snapshot = {"courses": []}
+        rows = self.rows()
+        self.assertEqual(len(rows), 2)
+        self.assertNotEqual(rows[0]["id"], rows[1]["id"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -39,3 +39,5 @@ Set `showInAssessmentOverview: true` for reviewed exams and major projects. Date
 Include `deadlineTime` only when the source gives an actual time. Date-only entries stay date-only in exports. Items in a **Prepare before class** section receive the existing 7 PM preceding-day reminder; their actual deadline is retained separately. A shared source link does not merge independent preparation with the submission itself.
 
 A refresh does not change the guide's review timestamp or interpret new announcements. Review conflicts and proposed changes against their sources before updating this file. For optional personal hosting, use `python courseworks.py guide-upload` after approval.
+
+For recurring work, use an `occurrences` list with each source-confirmed `dueOn`. Dated occurrences stay separate even when they share an assignment source; completion of one occurrence does not hide the next.

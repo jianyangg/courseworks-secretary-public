@@ -53,6 +53,7 @@ def _tasks_for_item(
                 "courseKey": course_key(course),
                 "recordKey": guide_record_key(course, {**item, **occurrence}, source_url, links),
                 "reviewed": True,
+                "occurrenceDate": due.date().isoformat() if len(occurrences) > 1 else None,
                 "title": title,
                 "course": course.get("title") or course.get("shortTitle") or "Course",
                 "courseAliases": [

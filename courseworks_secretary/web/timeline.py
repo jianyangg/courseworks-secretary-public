@@ -100,7 +100,8 @@ def build_timeline(
                 tasks.append(candidate)
     if guide:
         for curated in curated_tasks(guide):
-            if curated.get("recordKey") in completed_keys and not is_preparation(curated):
+            if (curated.get("recordKey") in completed_keys and not is_preparation(curated)
+                    and not curated.get("occurrenceDate")):
                 continue
             matching = matching_task(curated, tasks, EASTERN)
             if matching is not None:
