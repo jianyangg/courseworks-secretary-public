@@ -168,6 +168,7 @@ h1 {
   width: 36px;
   height: 36px;
   padding: 0;
+  line-height: 1;
   border: 1px solid var(--line);
   border-radius: 50%;
   color: var(--muted);
@@ -184,6 +185,7 @@ h1 {
 }
 
 .aiken-task-link svg {
+  display: block;
   width: 17px;
   height: 17px;
 }
@@ -216,7 +218,7 @@ h1 {
 
 .aiken-destination { position: relative; }
 
-.aiken-destination summary { cursor: pointer; list-style: none; font-size: 22px; }
+.aiken-destination summary { cursor: pointer; list-style: none; }
 
 .aiken-destination summary::-webkit-details-marker { display: none; }
 
