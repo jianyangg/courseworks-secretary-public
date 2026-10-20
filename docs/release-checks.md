@@ -14,7 +14,7 @@ The release organizes accessible coursework and a private reviewed guide through
 - Beginner instructions use short steps, a copyable request, and plain explanations. Course-review instructions focus on essential requirements; detailed commands and file formats are separate references.
 - A focused scan of release files and 70 historical public text blobs found no matches for Canvas-token/private-key patterns or known private course/student identifiers. This is a scoped check, not a comprehensive security audit.
 - The preview is a 1600 × 1000 opaque PNG on a solid background with crop padding, below the 20 MB limit. It contains fictional coursework only.
-- The Showcase description is 411 characters, including spaces and punctuation.
+- The Showcase description is 408 characters, including spaces and punctuation.
 
 The sample course guide includes distilled grading, submission requirements, preparation, and course rules across fictional syllabi, assignment pages, and announcements. Its source links identify the corresponding sample context. The public course-review playbook describes how a coding assistant compiles the same kind of brief from an owner's authorized sources.
 

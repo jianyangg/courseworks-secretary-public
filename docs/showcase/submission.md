@@ -1,4 +1,4 @@
-# Canvas / CourseWorks Secretary — Your Coursework, in View
+# Canvas / CourseWorks Secretary — Your Coursework, Collated
 
 Project URL: https://github.com/jianyangg/courseworks-secretary-public
 
@@ -6,4 +6,4 @@ Preview: [courseworks-secretary-preview.png](courseworks-secretary-preview.png)
 
 ## Description
 
-I built Canvas / CourseWorks Secretary to stop hunting across course pages, announcements, and syllabi. It puts deadlines, graded work, and exams in one timeline and calendar. I used Codex to build the app and study course sources, distilling grading rules, submission requirements, and key instructions into a private course guide. Students can adapt the public project with ChatGPT Work or a coding assistant.
+Stop hunting for deadlines and instructions across course pages, announcements, and syllabi. Canvas / CourseWorks Secretary brings deadlines, graded work, exams, and essential course information into one dashboard. Download the project, open its folder in ChatGPT Work, and copy the included setup request. ChatGPT guides the technical steps and helps turn your course materials into a concise, useful guide.
