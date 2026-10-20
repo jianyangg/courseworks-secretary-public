@@ -4,6 +4,8 @@ The `/demo` route uses fictional Machine Learning, Data Visualization, and Desig
 
 It demonstrates the timeline, course filters, preparation, source links, graded deadlines, exams/projects, calendar, and course guide. The guide shows a concise course brief: essential grading, submission requirements, preparation, and rules synthesized across the sample sources. **Reset demo** regenerates the sample. No credential is requested, no Canvas or Ed request is made, and no private snapshot or guide is read.
 
+The example banner links to [the ChatGPT beginner guide](../GET_STARTED.md), which covers a course brief from supplied materials, full local setup with ChatGPT Work, and the compatibility work needed for a Sites adaptation.
+
 ## Sources
 
 Demo source links point to this document. All courses, instructions, and grading details below are invented. They provide context for the authored example briefs. Dates move with the viewing date.

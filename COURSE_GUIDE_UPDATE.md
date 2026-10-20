@@ -2,7 +2,7 @@
 
 The course guide answers one question: **What do I actually need to know and do for this course?** It is a concise synthesis of the sources, with links back to the evidence.
 
-Use Codex, Claude Code, or another coding assistant in this project folder to review the sources and maintain the private guide. The website displays the result; refreshing Canvas collects new records for the next review.
+Use ChatGPT Work with access to the project folder, or a coding assistant such as Codex or Claude Code, to review the sources and maintain the private guide. The website displays the result; refreshing Canvas collects new records for the next review.
 
 ## Review workflow
 

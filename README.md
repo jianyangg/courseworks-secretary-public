@@ -17,30 +17,17 @@ A personal dashboard for coursework that is scattered across Canvas pages, annou
 
 Course filters apply across work views. Matching by Canvas record identity prevents renamed guide entries from creating duplicate deadlines, and known submissions suppress their linked guide deadlines. Preparation start times stay separate from actual deadlines.
 
-## Try the demo
+## Start with ChatGPT
 
-The demo uses fictional courses and the real interface. It needs no Canvas credentials, personal files, or storage account.
+[Follow the beginner setup guide](GET_STARTED.md) to make the dashboard useful for your courses. Download the project, open its folder in the ChatGPT desktop app, and ask **Work** to guide you through setup. The guide includes a request you can copy and a simpler route for creating a course brief from your materials.
 
-```sh
-python3.12 -m venv .venv
-source .venv/bin/activate
-python -m pip install -e .
-python -m uvicorn api.index:app --host 127.0.0.1 --port 8000
-```
+Work needs access to the project folder and the local tools used for setup. See the official [Work guide](https://learn.chatgpt.com/docs/get-started-with-work) and [local project guide](https://learn.chatgpt.com/docs/projects#use-local-projects-for-folders-and-codebases). Account availability and allowed tools vary.
 
-Open [the local demo](http://127.0.0.1:8000/demo). On Windows, activate the environment with `.venv\Scripts\activate` instead. Python 3.12 or newer is required. Node.js is needed only for the JavaScript development checks.
+Each installation belongs to one person. ChatGPT can help set up the supported local application and review authorized course sources. The website displays the resulting coursework and guide. It does not run AI or interpret every announcement automatically.
 
-## Make it your own
+Use the [course review workflow](COURSE_GUIDE_UPDATE.md) to distill what matters across the full syllabi, assignment instructions, pages, and announcements. Exams and project milestones appear when explicitly recorded in a reviewed guide. New or conflicting instructions still need review.
 
-Each installation belongs to one person. Run it locally, or deploy an individual password-protected copy using the [technical setup guide](TECHNICAL_SETUP.md).
-
-For guided setup, download or clone this repository, open its folder in a coding assistant such as Codex or Claude Code, and send:
-
-> Set up this project using README.md and TECHNICAL_SETUP.md. Start locally and verify the fictional demo first. Configure my Canvas origin and timezone. Explain my institution's access requirements and handle the technical steps. Let me enter credentials through the hidden local token-setup prompt, never in chat or a command argument. Help me choose the dashboard password through web-setup. Refresh my courses and verify they load. Follow COURSE_GUIDE_UPDATE.md to study all the course sources I authorize and distill the essential requirements into a private course guide using PRIVATE_GUIDE_FORMAT.md. Show source-linked changes and conflicts for review before applying them. Keep credentials, course content, snapshots, and study materials outside tracked project files. Explain optional personal hosting after local setup works.
-
-The dashboard collects accessible structured records. With a coding assistant, review the authorized course sources and compile a concise brief of what actually affects the work or grade. The guide keeps the essential rules and instructions together, with links to their sources. Follow the [course review workflow](COURSE_GUIDE_UPDATE.md) to create and maintain it. The website itself does not run AI or interpret every announcement automatically.
-
-Exams and project milestones appear when explicitly recorded in a reviewed guide. An exam mentioned only in prose will not automatically become an exam card. New or conflicting instructions still need source review.
+Codex and Claude Code are also supported setup tools. For commands, the fictional demo, and optional personal hosting, see [technical setup](TECHNICAL_SETUP.md). For ChatGPT Sites, the [beginner guide](GET_STARTED.md#can-i-use-chatgpt-sites) explains the compatibility limits of this Python application.
 
 ## Privacy and access
 

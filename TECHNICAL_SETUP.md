@@ -2,6 +2,8 @@
 
 Each installation uses one owner's Canvas account. Local use comes first; personal hosting is optional.
 
+For guided setup in ChatGPT Work, start with [the beginner guide](GET_STARTED.md). The commands below are the technical reference for setup.
+
 ## Install and preview
 
 Use Python 3.12 or newer. Create a virtual environment, activate it, and install the project:

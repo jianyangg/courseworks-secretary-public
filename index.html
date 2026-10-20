@@ -8,6 +8,7 @@
     <link rel="icon" href="/favicon.svg?v=3" type="image/svg+xml">
     <link rel="stylesheet" href="/app.css">
     <link rel="stylesheet" href="/ui/timeline.css">
+    <link rel="stylesheet" href="/ui/demo-notice.css">
     <link rel="stylesheet" href="/ui/task-details.css">
     <link rel="stylesheet" href="/ui/calendar.css">
     <link rel="stylesheet" href="/ui/course-guide.css">
@@ -33,7 +34,17 @@
   </head>
   <body>
     <main class="page-shell">
-      <aside class="demo-notice" id="demo-notice" hidden>Demo · Fictional courses, real interface. <a href="https://github.com/jianyangg/courseworks-secretary-public">Set up your own copy ↗</a></aside>
+      <aside class="demo-notice" id="demo-notice" aria-labelledby="demo-notice-title" hidden>
+        <div class="demo-notice-copy">
+          <p class="demo-notice-label">Example dashboard</p>
+          <h2 id="demo-notice-title">Make this your course dashboard.</h2>
+          <p class="demo-notice-description">These courses are fictional. ChatGPT can help you use this project for your own deadlines and essential course guide.</p>
+        </div>
+        <div class="demo-notice-actions">
+          <a class="demo-notice-start" href="https://github.com/jianyangg/courseworks-secretary-public/blob/master/GET_STARTED.md">Get started with ChatGPT</a>
+          <a class="demo-notice-repository" href="https://github.com/jianyangg/courseworks-secretary-public">View on GitHub</a>
+        </div>
+      </aside>
       <section class="login" id="login" aria-labelledby="login-title" hidden>
         <form class="login-form" id="login-form">
           <h1 id="login-title">CourseWorks Secretary</h1>
