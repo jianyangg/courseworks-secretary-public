@@ -3,6 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from .text import html_to_text
+from .config import BASE_URL
 from .source_links import content_links_from_html, external_links_from_html
 
 
@@ -198,7 +199,7 @@ def _file(item: Dict[str, Any], course_id: int) -> Dict[str, Any]:
         "display_name": item.get("display_name"),
         "updated_at": item.get("updated_at"),
         "content_type": item.get("content-type"),
-        "html_url": "https://courseworks2.columbia.edu/courses/{}/files/{}".format(course_id, item.get("id")),
+        "html_url": "{}/courses/{}/files/{}".format(BASE_URL, course_id, item.get("id")),
     }
 
 

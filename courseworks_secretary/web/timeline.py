@@ -5,9 +5,11 @@ from zoneinfo import ZoneInfo
 
 from courseworks_secretary.source_links import assignment_links, safe_courseworks_url
 from courseworks_secretary.web.curated_timeline import curated_tasks
+from .task_identity import canvas_record_key, course_key, is_preparation, matching_task, merge_task, stable_task_id
+from ..config import TIME_ZONE
 
 
-EASTERN = ZoneInfo("America/New_York")
+EASTERN = ZoneInfo(TIME_ZONE)
 WINDOW = timedelta(days=21)
 ACTIONABLE_PLANNER_TYPES = {
     "assignment",
@@ -25,22 +27,29 @@ def build_timeline(
 ) -> Dict[str, Any]:
     current = now or datetime.now(timezone.utc)
     tasks: List[Dict[str, Any]] = []
+    completed_keys: set[str] = set()
     for course in snapshot.get("courses") or []:
         course_label = _clean_title(
             course.get("course_code") or course.get("name") or "Course"
         )
         for assignment in course.get("assignments") or []:
+            record_key = canvas_record_key(course, assignment)
+            if assignment.get("submitted") and record_key:
+                completed_keys.add(record_key)
             due = _parse_date(assignment.get("due_at"))
-            if assignment.get("submitted") or due is None:
+            if due is None:
                 continue
             source_url = safe_courseworks_url(assignment.get("html_url"))
             tasks.append(
                 {
+                    "recordKey": record_key,
+                    "courseKey": course_key(course),
+                    "completed": bool(assignment.get("submitted")),
                     "title": _clean_title(
                         assignment.get("name") or "Untitled assignment"
                     ),
                     "course": course_label,
-                    "courseAliases": [course_label],
+                    "courseAliases": [value for value in (course_label, course.get("name"), course.get("course_code")) if value],
                     "colorKey": course_label,
                     "due": due,
                     "url": source_url,
@@ -59,8 +68,7 @@ def build_timeline(
             due = _parse_date(planner_item.get("due_at"))
             planner_type = planner_item.get("type")
             if (
-                planner_item.get("completed")
-                or due is None
+                due is None
                 or planner_type == "announcement"
             ):
                 continue
@@ -68,11 +76,14 @@ def build_timeline(
                 continue
             source_url = safe_courseworks_url(planner_item.get("html_url"))
             candidate = {
+                "recordKey": canvas_record_key(course, planner_item, planner_type),
+                "courseKey": course_key(course),
+                "completed": bool(planner_item.get("completed")),
                 "title": _clean_title(
                     planner_item.get("title") or "Untitled planner item"
                 ),
                 "course": course_label,
-                "courseAliases": [course_label],
+                "courseAliases": [value for value in (course_label, course.get("name"), course.get("course_code")) if value],
                 "colorKey": course_label,
                 "due": due,
                 "url": source_url,
@@ -82,27 +93,26 @@ def build_timeline(
                 "typeLabel": _planner_type_label(planner_type),
                 "isGraded": False,
             }
-            matching = _matching_task(candidate, tasks)
+            matching = matching_task(candidate, tasks, EASTERN)
             if matching is not None:
-                _merge_links(matching, candidate)
+                merge_task(matching, candidate, EASTERN)
             else:
                 tasks.append(candidate)
     if guide:
         for curated in curated_tasks(guide):
-            matching = _matching_task(curated, tasks)
+            if curated.get("recordKey") in completed_keys and not is_preparation(curated):
+                continue
+            matching = matching_task(curated, tasks, EASTERN)
             if matching is not None:
-                _merge_links(matching, curated)
-                if curated.get("isPreparation"):
-                    matching["isPreparation"] = True
-                if curated.get("isGraded") is not None:
-                    matching["isGraded"] = curated["isGraded"] is True
+                merge_task(matching, curated, EASTERN)
                 continue
             tasks.append(curated)
+    tasks = [task for task in tasks if not task.get("completed")]
     for task in tasks:
+        task["id"] = stable_task_id(task)
         if _is_preparation(task):
             deadline = task["due"].astimezone(EASTERN)
             task["deadlineAt"] = task["due"].isoformat()
-            task["deadlineIsDateOnly"] = task.get("timeLabel") == "Date only"
             task["due"] = (deadline - timedelta(days=1)).replace(
                 hour=19, minute=0, second=0, microsecond=0
             )
@@ -128,13 +138,18 @@ def build_timeline(
             )
         groups[-1]["tasks"].append(
             {
+                "id": task["id"],
                 "title": task["title"],
                 "course": task["course"],
                 "colorKey": task["colorKey"],
                 "time": task.get("timeLabel") or local_due.strftime("%-I:%M %p"),
                 "dueAt": task["due"].isoformat(),
                 "deadlineAt": task.get("deadlineAt"),
-                "deadlineIsDateOnly": task.get("deadlineIsDateOnly", False),
+                "deadlineIsDateOnly": bool(task.get("deadlineIsDateOnly")),
+                "deadlineConflict": task.get("deadlineConflict"),
+                "detail": task.get("detail"),
+                "guideTitle": task.get("guideTitle"),
+                "showInAssessmentOverview": bool(task.get("showInAssessmentOverview")),
                 "isPast": task["due"] < current,
                 "isLater": task["due"] - current > WINDOW,
                 "state": _state(task["due"], current),
@@ -149,6 +164,9 @@ def build_timeline(
         )
 
     return {
+        "timeZone": TIME_ZONE,
+        "syncedAt": snapshot.get("generated_at"),
+        "reviewedAt": (guide or {}).get("reviewedAt"),
         "generatedAt": _latest_update(snapshot.get("generated_at"), (guide or {}).get("reviewedAt")),
         "taskCount": len(tasks),
         "pastTaskCount": sum(task["due"] < current for task in tasks),
@@ -157,6 +175,8 @@ def build_timeline(
         ),
         "laterTaskCount": sum(task["due"] > current + WINDOW for task in tasks),
         "warningCount": len(snapshot.get("warnings") or []),
+        "warnings": snapshot.get("warnings") or [],
+        "edAccess": snapshot.get("ed_access"),
         "courses": _timeline_courses(tasks, guide or {}),
         "groups": groups,
     }
@@ -235,53 +255,7 @@ def _deadline_label(deadline: datetime, now: datetime) -> str:
 
 
 def _clean_title(value: str) -> str:
-    return re.sub(r"\s*\bFA\d{4}\b\s*", " ", value, flags=re.IGNORECASE).strip()
-
-
-def _matching_task(candidate: Dict[str, Any], tasks: List[Dict[str, Any]]) -> Dict[str, Any] | None:
-    candidate_title = _comparison_key(candidate["title"])
-    candidate_date = candidate["due"].astimezone(EASTERN).date()
-    candidate_courses = {
-        _comparison_key(alias) for alias in candidate.get("courseAliases") or []
-    }
-    for task in tasks:
-        same_course = bool(
-            candidate_courses
-            & {_comparison_key(alias) for alias in task.get("courseAliases") or []}
-        )
-        if not same_course:
-            continue
-        if (
-            _comparison_key(task["title"]) == candidate_title
-            and task["due"].astimezone(EASTERN).date() == candidate_date
-        ):
-            return task
-    return None
-
-
-def _merge_links(target: Dict[str, Any], curated: Dict[str, Any]) -> None:
-    if not curated.get("links"):
-        return
-    existing = list(target.get("links") or [])
-    if target.get("url") and not any(link["url"] == target["url"] for link in existing):
-        primary = next(
-            (link for link in curated["links"] if link["url"] == target["url"]),
-            None,
-        )
-        existing.insert(
-            0,
-            primary or {"label": target.get("sourceLabel") or "Source", "url": target["url"]},
-        )
-    seen = {link["url"] for link in existing}
-    for link in curated["links"]:
-        if link["url"] not in seen:
-            existing.append(link)
-            seen.add(link["url"])
-    target["links"] = existing
-
-
-def _comparison_key(value: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "", _clean_title(value).lower())
+    return re.sub(r"\s*\bFA\s*\d{4}\b\s*", " ", value, flags=re.IGNORECASE).strip()
 
 
 def _planner_type_label(value: Any) -> str:
@@ -303,10 +277,7 @@ def _latest_update(*values: Optional[str]) -> Optional[str]:
 
 
 def _is_preparation(task: Dict[str, Any]) -> bool:
-    if task.get("isPreparation"):
-        return True
-    title = task.get("title", "")
-    return bool(re.search(r"\bprepar", title, flags=re.IGNORECASE))
+    return is_preparation(task)
 
 
 def _timeline_sort_key(task: Dict[str, Any]) -> tuple:

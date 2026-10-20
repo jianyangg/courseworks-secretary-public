@@ -50,5 +50,17 @@
     return url.toString();
   }
 
-  return { AIKEN_APP_URL, buildTaskUrl, canAddTask };
+  function buildChatMessage(tasks) {
+    if (!tasks.length || tasks.some((task) => !canAddTask(task))) {
+      throw new Error('Select actionable work to send to Aiken.');
+    }
+    return ['Help me add and plan this coursework:', ...tasks.map((task, index) => {
+      return [`${index + 1}. ${String(task.title).trim()}`,
+        task.course && `Course: ${task.course}`,
+        taskDueDate(task) && `Due: ${taskDueDate(task)}`,
+        taskNotes(task)].filter(Boolean).join('\n');
+    })].join('\n\n');
+  }
+
+  return { AIKEN_APP_URL, buildTaskUrl, buildChatMessage, canAddTask };
 });

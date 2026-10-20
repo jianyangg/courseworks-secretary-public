@@ -43,9 +43,9 @@
     return { year: shifted.getUTCFullYear(), month: shifted.getUTCMonth() };
   }
 
-  function easternDateKey(date = new Date()) {
+  function easternDateKey(date = new Date(), timeZone = 'America/New_York') {
     const parts = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'America/New_York',
+      timeZone,
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',

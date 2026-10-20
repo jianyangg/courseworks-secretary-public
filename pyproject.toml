@@ -8,5 +8,11 @@ dependencies = [
   "vercel @ git+https://github.com/vercel/vercel-py.git@vercel-v0.10.0#subdirectory=src/vercel",
 ]
 
+[project.optional-dependencies]
+test = ["httpx==0.28.1"]
+
 [tool.vercel]
 entrypoint = "api.index:app"
+
+[tool.setuptools.packages.find]
+include = ["courseworks_secretary*", "api*"]

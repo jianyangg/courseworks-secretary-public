@@ -5,9 +5,18 @@ import unittest
 from unittest.mock import patch
 
 from courseworks_secretary.web.course_guide import build_course_guide
+from courseworks_secretary.web.private_guide import _validated
 
 
 class PrivateGuideTests(unittest.TestCase):
+    def test_invalid_review_timestamp_and_malformed_sections_are_rejected(self):
+        for guide in (
+            {"reviewedAt": "not a timestamp", "courses": []},
+            {"reviewedAt": "2026-01-01T00:00:00+00:00", "courses": [{"id": "x", "title": "Example", "sections": "bad"}]},
+        ):
+            with self.assertRaises(ValueError):
+                _validated(guide)
+
     def test_local_private_guide_overrides_generic_guide(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "course-guide.json"

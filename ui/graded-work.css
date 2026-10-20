@@ -1,0 +1,67 @@
+.timeline,
+.graded-work {
+  width: min(100%, 720px);
+  margin-inline: auto;
+}
+
+.graded-work-count {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.graded-work-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 20px;
+  padding: 17px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.graded-work-row h2 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 550;
+  line-height: 1.35;
+}
+
+.graded-work-course {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.graded-work-due {
+  display: grid;
+  align-content: start;
+  gap: 3px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.graded-work-due strong {
+  color: var(--soon);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.graded-work-due time {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.graded-work-links {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.aiken-destination[open] .aiken-task-link,
+.graded-work-row .aiken-task-link { opacity: 1; transform: none; }
+
+.graded-work-selection { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+
+.graded-work-selection input { margin-top: 4px; accent-color: var(--accent); }
+
+.graded-work > button:disabled { opacity: 0.5; cursor: default; }

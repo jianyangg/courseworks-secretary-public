@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 from .config import BASE_URL
 
 
-COURSEWORKS_HOST = "courseworks2.columbia.edu"
+COURSEWORKS_HOST = urlparse(BASE_URL).hostname
 SITE_LABELS = {
     "www.vmock.com": "VMock",
     "vmock.com": "VMock",
@@ -120,8 +120,9 @@ def safe_courseworks_url(value: Any) -> str | None:
     if value.startswith("/courses/"):
         value = BASE_URL + value
     parsed = urlparse(value)
-    if parsed.scheme == "https" and parsed.hostname == COURSEWORKS_HOST:
-        return value
+    if (parsed.scheme == "https" and parsed.netloc == urlparse(BASE_URL).netloc
+            and not parsed.username and not parsed.password):
+        return parsed._replace(query="", fragment="").geturl()
     return None
 
 

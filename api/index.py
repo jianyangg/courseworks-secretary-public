@@ -3,18 +3,32 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from courseworks_secretary.web.auth import SESSION_TTL, create_session, verify_password, verify_session
 from courseworks_secretary.web.course_guide import build_course_guide
 from courseworks_secretary.web.storage import snapshot_store
-from courseworks_secretary.web.runtime_config import setting
 from courseworks_secretary.web.sync import sync_courseworks
 from courseworks_secretary.web.timeline import build_timeline
+from api.demo import demo_router
+from courseworks_secretary.config import setting
 
 
 ROOT = Path(__file__).resolve().parent.parent
 SESSION_COOKIE = "courseworks_session"
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+app.mount("/ui", StaticFiles(directory=ROOT / "ui"), name="ui")
+app.include_router(demo_router(ROOT))
+
+
+@app.get("/api-client.js")
+def api_client_script():
+    return FileResponse(ROOT / "api-client.js", media_type="text/javascript")
+
+
+@app.get("/assessment-overview.js")
+def assessment_overview_script():
+    return FileResponse(ROOT / "assessment-overview.js", media_type="text/javascript")
 
 
 @app.middleware("http")
@@ -47,11 +61,6 @@ def assessment_styles():
     return FileResponse(ROOT / "assessments.css", media_type="text/css")
 
 
-@app.get("/assessment-overview.js")
-def assessment_script():
-    return FileResponse(ROOT / "assessment-overview.js", media_type="text/javascript")
-
-
 @app.get("/app.js")
 def script():
     return FileResponse(ROOT / "app.js", media_type="text/javascript")
@@ -75,6 +84,11 @@ def calendar_view_script():
 @app.get("/aiken-integration.js")
 def aiken_integration_script():
     return FileResponse(ROOT / "aiken-integration.js", media_type="text/javascript")
+
+
+@app.get("/aiken-actions.js")
+def aiken_actions_script():
+    return FileResponse(ROOT / "aiken-actions.js", media_type="text/javascript")
 
 
 @app.get("/favicon.svg")

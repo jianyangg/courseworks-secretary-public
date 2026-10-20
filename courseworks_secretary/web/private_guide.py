@@ -1,6 +1,7 @@
 """Optional personal guide kept outside the publishable source tree."""
 
 import json
+from datetime import datetime
 import os
 from pathlib import Path
 from typing import Any
@@ -49,4 +50,21 @@ def _validated(guide: Any) -> dict[str, Any]:
         raise ValueError("Private course guide must have a courses list")
     if not isinstance(guide.get("reviewedAt"), str):
         raise ValueError("Private course guide must have a reviewedAt timestamp")
+    try:
+        reviewed = datetime.fromisoformat(guide["reviewedAt"].replace("Z", "+00:00"))
+        if reviewed.tzinfo is None:
+            raise ValueError()
+    except ValueError:
+        raise ValueError("Private course guide reviewedAt must be an ISO timestamp with a timezone") from None
+    for course in guide["courses"]:
+        if not isinstance(course, dict) or not isinstance(course.get("title"), str):
+            raise ValueError("Each guide course must have a title")
+        if not isinstance(course.get("sections"), list):
+            raise ValueError("Each guide course must have a sections list")
+        for section in course["sections"]:
+            if not isinstance(section, dict):
+                raise ValueError("Guide sections must be objects")
+            for field in ("items", "bullets"):
+                if field in section and (not isinstance(section[field], list) or not all(isinstance(item, dict) for item in section[field])):
+                    raise ValueError(f"Guide section {field} must be a list of objects")
     return guide

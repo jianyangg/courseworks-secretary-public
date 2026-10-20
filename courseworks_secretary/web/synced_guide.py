@@ -4,14 +4,18 @@ import re
 from typing import Any, Dict, Optional
 
 from courseworks_secretary.source_links import assignment_links, page_links
+from courseworks_secretary.config import TIME_ZONE
+from .task_identity import course_key
 
 
 def add_synced_course_data(
     guide: Dict[str, Any], snapshot: Optional[Dict[str, Any]]
 ) -> Dict[str, Any]:
     result = deepcopy(guide)
+    result.setdefault("timeZone", TIME_ZONE)
     if not snapshot:
         return result
+    result["syncedAt"] = snapshot.get("generated_at")
 
     for synced_course in snapshot.get("courses") or []:
         guide_course = _matching_course(result, synced_course)
@@ -80,6 +84,8 @@ def _matching_course(
     }
     candidates.discard("")
     for course in guide.get("courses") or []:
+        if course_key(course) and course_key(course) == course_key(synced_course):
+            return course
         guide_keys = {
             _key(course.get("title")),
             _key(course.get("shortTitle")),

@@ -7,16 +7,31 @@
     <title>CourseWorks Secretary</title>
     <link rel="icon" href="/favicon.svg?v=3" type="image/svg+xml">
     <link rel="stylesheet" href="/app.css">
+    <link rel="stylesheet" href="/ui/timeline.css">
+    <link rel="stylesheet" href="/ui/calendar.css">
+    <link rel="stylesheet" href="/ui/course-guide.css">
+    <link rel="stylesheet" href="/ui/graded-work.css">
     <link rel="stylesheet" href="/assessments.css">
+    <link rel="stylesheet" href="/ui/responsive.css">
+    <link rel="stylesheet" href="/ui/polish.css">
+    <script src="/api-client.js" defer></script>
     <script src="/timeline-filters.js" defer></script>
     <script src="/graded-work.js" defer></script>
     <script src="/calendar-view.js" defer></script>
     <script src="/aiken-integration.js" defer></script>
+    <script src="/aiken-actions.js" defer></script>
     <script src="/assessment-overview.js" defer></script>
+    <script src="/ui/source-links.js" defer></script>
+    <script src="/ui/task-row.js" defer></script>
+    <script src="/ui/course-guide.js" defer></script>
+    <script src="/ui/timeline.js" defer></script>
+    <script src="/ui/graded-work.js" defer></script>
+    <script src="/ui/calendar.js" defer></script>
     <script src="/app.js" defer></script>
   </head>
   <body>
     <main class="page-shell">
+      <aside class="demo-notice" id="demo-notice" hidden>Demo · Fictional courses, real interface. <a href="https://github.com/jianyangg/courseworks-secretary-public">Set up your own copy ↗</a></aside>
       <section class="login" id="login" aria-labelledby="login-title" hidden>
         <form class="login-form" id="login-form">
           <h1 id="login-title">CourseWorks Secretary</h1>
@@ -30,7 +45,8 @@
 
       <section class="timeline-view" id="timeline-view" aria-labelledby="timeline-title" hidden>
         <header class="timeline-header">
-          <h1 id="timeline-title">CourseWorks timeline</h1>
+          <a class="product-brand" href="#"><img src="/favicon.svg" width="26" height="26" alt="">CourseWorks Secretary</a>
+          <h1 id="timeline-title">Your coursework, in view.</h1>
           <p id="timeline-summary">Loading…</p>
           <div class="timeline-actions">
             <button class="quiet-button" id="sync-button" type="button">Refresh</button>
@@ -53,7 +69,7 @@
             <a href="#guide">Course details</a>
           </div>
           <div class="assessments-grid" id="assessments-grid"></div>
-          <p id="assessments-empty">Ask your AI assistant to add reviewed exams and major projects to your private course guide.</p>
+          <p class="empty-state" id="assessments-empty">No upcoming exams or major projects are confirmed for these courses. Check the course guide for source details.</p>
         </section>
 
         <div class="timeline" id="timeline" aria-live="polite"></div>

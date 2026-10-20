@@ -1,24 +1,20 @@
+const test = require('node:test');
 const assert = require('node:assert/strict');
-function element() {
-  return { children: [], hidden: false, textContent: '', append(...items) { this.children.push(...items); }, replaceChildren(...items) { this.children = items; } };
-}
-const grid = element();
-const empty = element();
-global.window = {};
-global.document = {
-  getElementById: id => id === 'assessments-grid' ? grid : empty,
-  createElement: element,
-};
-require('../assessment-overview.js');
-window.AssessmentOverview.render({ courses: [{ title: 'Example', sections: [{ items: [
-  { title: 'Private exam', date: 'Oct 5', showInAssessmentOverview: true },
-  { title: 'Reading', date: 'Oct 4' },
-] }] }] });
-assert.equal(grid.children.length, 1);
-assert.equal(grid.children[0].children.length, 2);
-assert.equal(grid.children[0].children[1].textContent, 'Private exam · Oct 5');
-assert.equal(empty.hidden, true);
-window.AssessmentOverview.render(undefined);
-assert.equal(grid.children.length, 0);
-assert.equal(empty.hidden, false);
-console.log('Assessment overview checks passed');
+const { overviewCourses } = require('../assessment-overview.js');
+const now = new Date('2026-10-20T12:00:00Z');
+
+test('groups explicit major assessments from the visible timeline without inventing exams', () => {
+  const courses = overviewCourses({ groups: [{ tasks: [
+    { id: 'exam', title: 'Exam', course: 'Example', dueAt: '2026-11-01T12:00:00Z', showInAssessmentOverview: true },
+    { id: 'exam', title: 'Exam', course: 'Example', dueAt: '2026-11-01T12:00:00Z', showInAssessmentOverview: true },
+    { title: 'Homework', course: 'Example', dueAt: '2026-11-01T12:00:00Z', isGraded: true },
+    { title: 'Old exam', course: 'Example', dueAt: '2026-10-01T12:00:00Z', showInAssessmentOverview: true },
+    { title: 'Prepare for exam', course: 'Example', dueAt: '2026-11-01T12:00:00Z', showInAssessmentOverview: true, isPreparation: true },
+  ] }] }, now);
+  assert.equal(courses.length, 1);
+  assert.deepEqual(courses[0].items.map(item => item.title), ['Exam']);
+});
+
+test('an empty timeline has no fabricated assessment cards', () => {
+  assert.deepEqual(overviewCourses({ groups: [] }, now), []);
+});

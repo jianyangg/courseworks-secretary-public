@@ -1,52 +1,65 @@
 # CourseWorks Secretary
 
-Turn your AI coding assistant, such as Codex, into a **personal secretary for your classwork**. Give it access to your own CourseWorks account and course materials, then ask it what to work on today, what to prepare before class, how to submit an assignment, or what changed in the latest announcements. It can read across syllabi, documents, and messages, bring the instructions together, and keep a private dashboard of your deadlines and course guide—so you spend less time hunting for requirements and more time doing the work.
+**Your coursework, in view.**
 
-The dashboard collects assignments and dates from CourseWorks. Your assistant does the reading and planning when you ask: it can catch homework mentioned only in an announcement, explain submission requirements, flag conflicting deadlines, and propose a prioritized plan with source links. You review its proposed guide changes before they are applied. The dashboard reads your account and cannot submit or change coursework; it does not run the assistant automatically.
+A personal dashboard for coursework that is scattered across Canvas pages, announcements, and syllabi. See what is due, what counts toward your grade, and what needs preparation, with links back to the source.
 
-## Start here — no programming knowledge needed
+![CourseWorks Secretary showing fictional coursework](docs/showcase/courseworks-secretary-preview.png)
 
-You need your Columbia CourseWorks account and an AI coding assistant that can work with files on your computer. A chat window alone may not be able to install or run the app.
+## What it does
 
-1. On this GitHub page, select **Code → Download ZIP**. Open the downloaded ZIP to get the project folder.
-2. Open that folder in your AI coding assistant. If you do not know how, ask it: “Help me open the CourseWorks Secretary folder I downloaded so you can set it up.”
-3. Copy the request below into the assistant. It should handle the technical work and guide you through the few steps that require your account.
+- **Timeline:** upcoming deadlines and preparation, with past and later work available when needed.
+- **Graded work:** confirmed graded deadlines across the term, with days remaining.
+- **Exams & projects:** reviewed major assessments grouped by course.
+- **Calendar:** a month view and day-by-day agenda using the same coursework.
+- **Course guide:** private, reviewed instructions alongside fresh announcements and source links.
+- **Optional Aiken handoff:** open a task draft or copy selected coursework into Aiken Chat for review.
 
-> Set up CourseWorks Secretary for me using README.md and TECHNICAL_SETUP.md. Explain each step in everyday language and handle the technical work yourself. Start by running it on my computer. Guide me through creating a CourseWorks access token. Open an interactive terminal for me to enter it with `python courseworks.py token-setup`, then let me choose my dashboard password with `python courseworks.py web-setup`. Explain that typing is hidden. Open the dashboard and verify that my courses load. Read my current announcements, syllabi, course pages, and linked documents to draft a course guide and timeline, including work missing from the assignment list. Show me the draft with source links before applying it. Follow PRIVATE_GUIDE_FORMAT.md to store the approved guide privately. Then explain this choice: use it only while it is running on my computer, or set up a password-protected website I can open from my phone or another computer. If I choose the website, guide me through the free Vercel Hobby setup and handle its settings and private storage. Show me what will be put online and get my approval before putting it online. Keep my credentials and course material out of chat, screenshots, logs, and the public project files. Do not ask me to choose technical settings I would not understand; explain the practical choice and recommend a suitable default.
+Course filters apply across work views. Matching by Canvas record identity prevents renamed guide entries from creating duplicate deadlines, and known submissions suppress their linked guide deadlines. Preparation start times stay separate from actual deadlines.
 
-## The steps you do yourself
+## Try the demo
 
-Your assistant should give you one step at a time, tell you exactly where to click, and explain what success looks like.
+The demo uses fictional courses and the real interface. It needs no Canvas credentials, personal files, or storage account.
 
-- **Allow access to your courses.** Sign in to [CourseWorks](https://courseworks2.columbia.edu/), then open **Account → Settings → Approved Integrations → New Access Token**. A token is a private access code that lets the app read your account. Create one and paste it into the private setup prompt your assistant opens in a terminal, then press Enter. Nothing will appear while you paste or type; that is expected. The program saves it for you, so you do not need to edit a file or enter it every time. Do not paste it into the conversation. If the option is missing, tell your assistant what you see.
-- **Choose a dashboard password.** Enter it twice when the setup program asks. Typing stays hidden. Use at least 8 characters and a different password from your Columbia login. Save it in your password manager so you can sign in later; the app stores a verification value rather than your readable password. Anyone who knows this dashboard password can see your course information.
-- **Review the course guide.** Check the assistant’s proposed deadlines and instructions against its sources. It should flag missing or conflicting information instead of guessing. If a document needs a separate sign-in, it may ask you to open it or provide a copy you are allowed to use.
-- **Optional: sign in to Vercel.** Vercel is the service that keeps your website available when your computer is off. Your assistant should guide you through creating your own account and storing your course information privately. [Its Hobby plan is free for personal projects](https://vercel.com/docs/plans/hobby), including [storage within the free usage limits](https://vercel.com/docs/vercel-blob/usage-and-pricing). Your AI assistant may have its own costs. You can skip this step and use the dashboard on your computer.
+```sh
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .
+python -m uvicorn api.index:app --host 127.0.0.1 --port 8000
+```
 
-For an online dashboard, your assistant transfers the saved access code and generated settings to your own website’s private settings. You use the same dashboard password there. You should not have to invent or manually copy technical secrets. Your Columbia and Vercel passwords are entered only on their own sign-in pages, never in this app or the assistant’s conversation.
+Open [the local demo](http://127.0.0.1:8000/demo). On Windows, activate the environment with `.venv\Scripts\activate` instead. Python 3.12 or newer is required. Node.js is needed only for the JavaScript development checks.
 
-If you forget your dashboard password, ask your assistant to help you choose a replacement and update your website settings if needed. If the CourseWorks access code expires, create a new one and ask the assistant to repeat the private entry step and update the website too.
+## Make it your own
 
-Setup is finished when you can open the dashboard, sign in, see your own courses, and see the approved guide and its dated tasks. If you chose a website, save its address and try it on your phone. Your assistant should also tell you how to reopen the app and refresh it later.
+Each installation belongs to one person. Run it locally, or deploy an individual password-protected copy using the [technical setup guide](TECHNICAL_SETUP.md).
 
-## Keep it up to date
+For guided setup, download or clone this repository, open its folder in a coding assistant such as Codex or Claude Code, and send:
 
-**Use Sync for new CourseWorks records.** Sign in and select **Sync** to fetch assignments, dates, announcements, and links. An online installation also attempts this daily. The free hosting plan may run that update at any point within the scheduled hour. Sync does not read documents for meaning or rewrite your reviewed course guide.
+> Set up this project using README.md and TECHNICAL_SETUP.md. Start locally and verify the fictional demo first. Configure my Canvas origin and timezone. Explain my institution's access requirements and handle the technical steps. Let me enter credentials through the hidden local token-setup prompt, never in chat or a command argument. Help me choose the dashboard password through web-setup. Refresh my courses and verify they load. Read the sources I authorize, then propose a private course guide using PRIVATE_GUIDE_FORMAT.md. Show source-linked changes and conflicts for review before applying them. Keep credentials, course content, snapshots, and study materials outside tracked project files. Explain optional personal hosting after local setup works.
 
-**Ask your assistant to review new instructions.** Do this at the start of a term and when instructors post new documents, announce work, or change requirements. This is how homework mentioned only in an announcement, required reading, submission rules, and conflicting deadlines become useful guide and timeline entries. The dashboard does not run an AI assistant automatically.
+The dashboard collects accessible structured records. The coding assistant can read additional sources, maintain a reviewed guide, create study materials, and extend the local project when asked. The website itself does not run AI or interpret every announcement automatically.
 
-Copy this request into the assistant that has your project folder:
+Exams and project milestones appear when explicitly recorded in a reviewed guide. An exam mentioned only in prose will not automatically become an exam card. New or conflicting instructions still need source review.
 
-> Refresh my CourseWorks Secretary dashboard. Read current announcements, syllabi, course pages, and linked documents, and compare them with the assignment list. Find work or preparation mentioned only in those sources. Show me proposed course-guide and timeline changes with source links, and flag unclear dates or conflicting instructions. After I review and approve the changes, update my private guide using PRIVATE_GUIDE_FORMAT.md. If I have a website, update its private copy too. Handle the commands yourself and keep my credentials and course material out of the public project files.
+## Privacy and access
 
-Your guide is only as current as the last document review. If automatic updates fail, ask your assistant to check them; it should preserve your existing data while investigating.
+- Credentials and course files stay in the owner's private configuration and storage. This repository contains no student account or coursework data.
+- The app makes read requests to Canvas. Personal tokens may carry broader account permissions, so treat them like passwords.
+- Access depends on the institution's Canvas configuration and approved authentication methods. Manual tokens are described by Canvas for individual development/testing; multi-user integrations require OAuth. See [Canvas authentication guidance](https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth).
+- Anyone who knows an individual deployment's dashboard password can see that installation's courses.
+- The app does not submit work, edit Canvas, send messages, or mark coursework complete.
 
-## Optional task list
+## How I used AI
 
-**Add to Aiken** opens [Aiken Dewit](https://aikendewit.com/) with the selected task’s details filled in for review. You decide whether to save it there. Using Aiken is optional.
+I built and refined the project with Codex to spend less time hunting for course requirements. I also use an external coding assistant to review course materials and maintain my private guide. The public version provides the reusable application and setup workflow; personal course content is excluded.
 
-## For technical users and AI assistants
+## Development
 
-See [technical setup](TECHNICAL_SETUP.md) for commands, website configuration, and privacy details, and [the private guide format](PRIVATE_GUIDE_FORMAT.md) for storing reviewed course instructions.
+```sh
+python -m pip install -e '.[test]'
+python -m unittest discover -s tests
+node --test tests/*.js
+```
 
-Each installation belongs to one CourseWorks account. This project contains no student courses or account data. Keep your access code and personal course files private, and have your assistant check both files and saved Git history before sharing a modified copy publicly.
+See [demo details](docs/demo.md), [technical setup](TECHNICAL_SETUP.md), and [the private guide format](PRIVATE_GUIDE_FORMAT.md).

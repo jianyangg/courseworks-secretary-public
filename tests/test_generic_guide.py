@@ -21,7 +21,8 @@ class GenericGuideTests(unittest.TestCase):
             }],
         }
         guide = build_course_guide(snapshot)
-        self.assertEqual(guide["reviewedAt"], snapshot["generated_at"])
+        self.assertIsNone(guide["reviewedAt"])
+        self.assertEqual(guide["syncedAt"], snapshot["generated_at"])
         self.assertEqual([c["title"] for c in guide["courses"]], ["Example Course"])
         self.assertEqual(guide["courses"][0]["sections"][0]["items"][0]["title"], "Welcome")
 

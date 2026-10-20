@@ -1,0 +1,259 @@
+@media (max-width: 560px) {
+  .graded-work-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .graded-work-due {
+    text-align: left;
+  }
+}
+
+@media (hover: none) {
+  .task-link {
+    opacity: 1;
+    transform: none;
+  }
+
+  .course-filters {
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 100%;
+    min-height: 44px;
+    overflow-x: auto;
+    padding: 3px 1px 5px;
+    scrollbar-width: none;
+  }
+
+  .course-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .course-filter {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 7px;
+    width: auto;
+    min-height: 38px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 7px 11px;
+  }
+
+  .course-filter-label {
+    position: static;
+    max-width: 145px;
+    overflow: hidden;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    font-size: 0.75rem;
+    opacity: 1;
+    text-overflow: ellipsis;
+    transform: none;
+    white-space: nowrap;
+  }
+
+  .course-filter[aria-pressed="false"] .course-filter-label {
+    color: var(--muted);
+    text-decoration: line-through;
+  }
+}
+
+@media (max-width: 560px) {
+  .page-shell {
+    padding-inline: 16px;
+  }
+
+  .view-switch {
+    width: 100%;
+  }
+
+  .view-switch button {
+    flex: 1;
+    padding-inline: 7px;
+    font-size: 0.82rem;
+  }
+
+  .calendar-toolbar {
+    margin-bottom: 12px;
+  }
+
+  .calendar-day {
+    min-height: 58px;
+    padding: 5px;
+  }
+
+  .calendar-day-number {
+    width: 23px;
+    height: 23px;
+    margin-bottom: 4px;
+  }
+
+  .calendar-day-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+  }
+
+  .calendar-day-item {
+    display: block;
+  }
+
+  .calendar-day-item i {
+    display: block;
+  }
+
+  .calendar-day-item span,
+  .calendar-day-more {
+    display: none;
+  }
+
+  .calendar-agenda {
+    margin-top: 22px;
+  }
+
+  .timeline-track::before {
+    left: 9px;
+  }
+
+  .timeline.showing-past::before {
+    top: 67px;
+    left: 9px;
+  }
+
+  .timeline-stop {
+    grid-template-columns: 20px minmax(0, 1fr);
+    min-height: 0;
+    padding-bottom: 28px;
+  }
+
+  .timeline-date {
+    grid-column: 2;
+    padding: 0 0 8px 12px;
+    text-align: left;
+  }
+
+  .timeline-date strong,
+  .timeline-date span {
+    display: inline;
+  }
+
+  .timeline-date span::before {
+    content: " · ";
+  }
+
+  .timeline-dot {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+
+  .timeline-content {
+    grid-column: 2;
+    padding-left: 12px;
+  }
+
+  .timeline-content::before {
+    display: none;
+  }
+
+  .task-row {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 7px;
+    padding: 9px 0;
+  }
+
+  .task-copy {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .task-time {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    padding-top: 2px;
+  }
+
+  .task-link {
+    width: 44px;
+    height: 44px;
+    margin-right: -4px;
+  }
+
+  .task-row-actions {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: flex-start;
+  }
+
+  .aiken-task-link {
+    width: 40px;
+    height: 40px;
+  }
+
+  .task-row-multi-link {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .task-row-multi-link .task-copy {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .task-row-multi-link .task-time {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .task-row-multi-link .task-links {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: flex-start;
+    padding-left: 17px;
+  }
+
+  .source-button {
+    min-height: 40px;
+  }
+
+  .task-title {
+    font-size: 1.05rem;
+    line-height: 1.28;
+  }
+
+  .task-course {
+    line-height: 1.3;
+  }
+
+  .course-guide-tabs {
+    justify-content: flex-start;
+    margin-inline: -16px;
+    padding-inline: 16px;
+  }
+
+  .guide-course-header {
+    display: block;
+  }
+
+  .guide-source-links {
+    justify-items: start;
+    margin-top: 10px;
+  }
+
+  .guide-section {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .past-tasks-summary,
+  .later-tasks-summary {
+    min-height: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .task-link,
+  .aiken-task-link {
+    transition: none;
+  }
+}
