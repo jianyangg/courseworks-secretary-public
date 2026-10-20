@@ -19,6 +19,24 @@ class DemoTests(unittest.TestCase):
         self.assertTrue(any(task["isLater"] for task in tasks))
         self.assertEqual(snapshot["student"]["name"], "Demo")
 
+    def test_course_briefs_distill_rules_beyond_the_deadline_list(self):
+        _, guide = demo_data(datetime(2026, 10, 20, 12, tzinfo=timezone.utc))
+        for course in guide["courses"]:
+            bullets = [bullet for section in course["sections"] for bullet in section.get("bullets", [])]
+            copy = " ".join(bullet["text"] for bullet in bullets)
+            self.assertRegex(copy, r"\d+%", course["title"])
+            self.assertIn("Submit", copy, course["title"])
+            self.assertGreaterEqual(len({bullet.get("url") for bullet in bullets if bullet.get("url")}), 2)
+            self.assertFalse(any("dueOn" in bullet for bullet in bullets))
+
+    def test_undated_course_essentials_do_not_become_timeline_tasks(self):
+        now = datetime(2026, 10, 20, 12, tzinfo=timezone.utc)
+        snapshot, guide = demo_data(now)
+        result = build_timeline(snapshot, guide=guide, now=now)
+        tasks = [task for group in result["groups"] for task in group["tasks"]]
+        self.assertEqual(len(tasks), 7)
+        self.assertTrue(guide["isDemo"])
+
     def test_demo_dates_move_with_the_viewing_date(self):
         now = datetime(2026, 10, 20, 12, tzinfo=timezone.utc)
         first, _ = demo_data(now)

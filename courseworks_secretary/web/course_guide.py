@@ -23,7 +23,7 @@ def build_course_guide(snapshot: Dict[str, Any] | None = None) -> Dict[str, Any]
             "shortTitle": code,
             "title": title,
             "colorKey": code,
-            "subtitle": "Synced from CourseWorks",
+            "subtitle": "Synced sources · course brief not reviewed yet",
             "sourceLabel": "CourseWorks",
             "courseUrl": course.get("html_url"),
             "sections": [],

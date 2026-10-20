@@ -4,9 +4,7 @@ from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
 from ..config import TIME_ZONE
-
-
-DEMO_SOURCE = "https://github.com/jianyangg/courseworks-secretary-public/blob/master/docs/demo.md"
+from .demo_briefs import DEMO_SOURCE, demo_course_brief
 
 
 def demo_data(now: datetime | None = None) -> tuple[dict, dict]:
@@ -21,11 +19,10 @@ def demo_data(now: datetime | None = None) -> tuple[dict, dict]:
         {"id": 9002, "name": "Data Visualization", "course_code": "Data Visualization", "assignments": []},
         {"id": 9003, "name": "Design Studio", "course_code": "Design Studio", "assignments": []},
     ]
-    guide_courses = [{
-        "id": str(course["id"]), "title": course["name"], "shortTitle": course["name"],
-        "colorKey": course["course_code"], "subtitle": "Fictional course · demo data",
-        "courseUrl": DEMO_SOURCE, "sourceLabel": "Demo sources", "sections": [{"label": "Reviewed deadlines", "items": []}],
-    } for course in courses]
+    guide_courses = [demo_course_brief(course) for course in courses]
+    deadline_sections = [{"label": "Key deadlines", "items": []} for _ in courses]
+    for course, section in zip(guide_courses, deadline_sections):
+        course["sections"].append(section)
     records = [
         (1, 0, "Tell a story with a messy dataset", False, "Build a clear chart and explain the choice of visual encoding."),
         (0, 1, "Problem set 3: search algorithms", False, "Submit the solutions and a short explanation of each approach."),
@@ -40,7 +37,7 @@ def demo_data(now: datetime | None = None) -> tuple[dict, dict]:
             "id": 9100 + index, "name": title, "due_at": due.isoformat(), "points_possible": 100,
             "grading_type": "points", "external_links": [{"label": "Demo source", "url": DEMO_SOURCE}],
         })
-        guide_courses[course_index]["sections"][0]["items"].append({
+        deadline_sections[course_index]["items"].append({
             "title": title, "dueOn": due.date().isoformat(), "date": due.strftime("%b %-d"),
             "deadlineTime": due.strftime("%-I:%M %p"), "canvasAssignmentId": 9100 + index,
             "sourceUrl": DEMO_SOURCE, "detail": detail, "isGraded": True,
@@ -54,4 +51,4 @@ def demo_data(now: datetime | None = None) -> tuple[dict, dict]:
     }]})
     return ({"generated_at": current.isoformat(), "student": {"id": "demo", "name": "Demo"},
              "courses": courses, "warnings": []},
-            {"reviewedAt": current.isoformat(), "timeZone": TIME_ZONE, "courses": guide_courses})
+            {"isDemo": True, "reviewedAt": current.isoformat(), "timeZone": TIME_ZONE, "courses": guide_courses})

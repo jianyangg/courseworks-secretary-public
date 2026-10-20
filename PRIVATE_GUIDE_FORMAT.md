@@ -2,6 +2,8 @@
 
 Store the approved guide at `work/courseworks/course-guide.json`. The directory is ignored by Git and deployment packaging. Keep personal course content and study materials outside tracked project files.
 
+The guide is a distilled course brief. Use [COURSE_GUIDE_UPDATE.md](COURSE_GUIDE_UPDATE.md) to review all relevant sources and extract the essential requirements before filling this format. Keep undated grading, submission, and policy facts alongside dated actions.
+
 A guide has an ISO review timestamp with a timezone and a `courses` list. Each course has a stable `id`, a `title`, `shortTitle`, `colorKey`, and `sections`. Use `canvasCourseId` and the course URL to bind a renamed guide course to Canvas reliably.
 
 ```json
@@ -15,6 +17,15 @@ A guide has an ISO review timestamp with a timezone and a `courses` list. Each c
     "colorKey": "EX101",
     "courseUrl": "https://school.instructure.com/courses/123",
     "sections": [{
+      "label": "At a glance",
+      "note": "Weekly individual work builds toward a team project. Keep the implementation reproducible and explain the decisions."
+    }, {
+      "label": "Must know",
+      "bullets": [{
+        "text": "Submit the project code and a PDF report through Canvas; name each team member's contribution.",
+        "url": "https://school.instructure.com/courses/123/assignments/456"
+      }]
+    }, {
       "label": "Major assessments",
       "items": [{
         "title": "Project presentation",

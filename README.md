@@ -12,7 +12,7 @@ A personal dashboard for coursework that is scattered across Canvas pages, annou
 - **Graded work:** confirmed graded deadlines across the term, with days remaining.
 - **Exams & projects:** reviewed major assessments grouped by course.
 - **Calendar:** a month view and day-by-day agenda using the same coursework.
-- **Course guide:** private, reviewed instructions alongside fresh announcements and source links.
+- **Course guide:** the essentials distilled across syllabi, course pages, assignments, and announcements: grading, submission rules, preparation, and key requirements.
 - **Optional Aiken handoff:** open a task draft or copy selected coursework into Aiken Chat for review.
 
 Course filters apply across work views. Matching by Canvas record identity prevents renamed guide entries from creating duplicate deadlines, and known submissions suppress their linked guide deadlines. Preparation start times stay separate from actual deadlines.
@@ -36,9 +36,9 @@ Each installation belongs to one person. Run it locally, or deploy an individual
 
 For guided setup, download or clone this repository, open its folder in a coding assistant such as Codex or Claude Code, and send:
 
-> Set up this project using README.md and TECHNICAL_SETUP.md. Start locally and verify the fictional demo first. Configure my Canvas origin and timezone. Explain my institution's access requirements and handle the technical steps. Let me enter credentials through the hidden local token-setup prompt, never in chat or a command argument. Help me choose the dashboard password through web-setup. Refresh my courses and verify they load. Read the sources I authorize, then propose a private course guide using PRIVATE_GUIDE_FORMAT.md. Show source-linked changes and conflicts for review before applying them. Keep credentials, course content, snapshots, and study materials outside tracked project files. Explain optional personal hosting after local setup works.
+> Set up this project using README.md and TECHNICAL_SETUP.md. Start locally and verify the fictional demo first. Configure my Canvas origin and timezone. Explain my institution's access requirements and handle the technical steps. Let me enter credentials through the hidden local token-setup prompt, never in chat or a command argument. Help me choose the dashboard password through web-setup. Refresh my courses and verify they load. Follow COURSE_GUIDE_UPDATE.md to study all the course sources I authorize and distill the essential requirements into a private course guide using PRIVATE_GUIDE_FORMAT.md. Show source-linked changes and conflicts for review before applying them. Keep credentials, course content, snapshots, and study materials outside tracked project files. Explain optional personal hosting after local setup works.
 
-The dashboard collects accessible structured records. The coding assistant can read additional sources, maintain a reviewed guide, create study materials, and extend the local project when asked. The website itself does not run AI or interpret every announcement automatically.
+The dashboard collects accessible structured records. With a coding assistant, review the authorized course sources and compile a concise brief of what actually affects the work or grade. The guide keeps the essential rules and instructions together, with links to their sources. Follow the [course review workflow](COURSE_GUIDE_UPDATE.md) to create and maintain it. The website itself does not run AI or interpret every announcement automatically.
 
 Exams and project milestones appear when explicitly recorded in a reviewed guide. An exam mentioned only in prose will not automatically become an exam card. New or conflicting instructions still need source review.
 
@@ -52,7 +52,7 @@ Exams and project milestones appear when explicitly recorded in a reviewed guide
 
 ## How I used AI
 
-I built and refined the project with Codex to spend less time hunting for course requirements. I also use an external coding assistant to review course materials and maintain my private guide. The public version provides the reusable application and setup workflow; personal course content is excluded.
+I built and refined the project with Codex to spend less time hunting for course requirements. I also use Codex to study the course sites, syllabi, assignments, and announcements, then distill the essential information into my private course guide. The public version includes the application and review workflow so students can create their own briefs; personal course content is excluded.
 
 ## Development
 

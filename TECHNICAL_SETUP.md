@@ -48,7 +48,7 @@ The token is stored in `.env` with owner-only permissions. The app does not need
 
 ## Maintain the private guide
 
-Sync gathers structured records, announcements, and resource links; it does not interpret free-form instructions. An external assistant can review authorized sources and propose guide updates. Review the source-linked draft, then save the approved guide using [PRIVATE_GUIDE_FORMAT.md](PRIVATE_GUIDE_FORMAT.md).
+Sync gathers structured records, announcements, and resource links; it does not interpret free-form instructions. Follow [COURSE_GUIDE_UPDATE.md](COURSE_GUIDE_UPDATE.md) with a coding assistant to study the full authorized sources and distill grading, submission rules, preparation, and essential requirements into course briefs. Review the source-linked draft, then save the approved guide using [PRIVATE_GUIDE_FORMAT.md](PRIVATE_GUIDE_FORMAT.md).
 
 Keep the guide and study materials under ignored private paths. Records linked to a Canvas assignment share its submission status and current deadline. Conflicts with the reviewed guide remain visible for review. Independent preparation remains separate.
 

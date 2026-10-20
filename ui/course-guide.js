@@ -115,7 +115,7 @@ function renderGuideCourse(course) {
 function renderCourseGuide(data) {
   guideData = data;
   const reviewed = data.reviewedAt ? new Date(data.reviewedAt) : null;
-  courseGuideSummary.textContent = reviewed && !Number.isNaN(reviewed.getTime()) ? `Guide reviewed ${new Intl.DateTimeFormat('en-US', {
+  courseGuideSummary.textContent = data.isDemo ? 'Example course brief · fictional sources' : reviewed && !Number.isNaN(reviewed.getTime()) ? `Guide reviewed ${new Intl.DateTimeFormat('en-US', {
     month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit',
     timeZone: data.timeZone || timelineData?.timeZone || 'America/New_York', timeZoneName: 'short',
   }).format(reviewed)}` : 'Synced course information · no reviewed guide yet';
