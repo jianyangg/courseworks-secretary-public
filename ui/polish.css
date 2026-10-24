@@ -95,16 +95,6 @@ body[data-preview] .later-tasks { display: none; }
   transform: none;
 }
 
-.view-switch {
-  margin-top: 18px;
-  gap: 4px;
-}
-
-.view-switch button {
-  flex: 1 1 auto;
-  min-height: 40px;
-}
-
 .task-copy {
   min-width: 0;
 }
@@ -167,7 +157,6 @@ summary:focus-visible {
   .page-shell { padding-inline: 16px; }
   .product-brand { margin-bottom: 12px; }
   .course-filter-label { max-width: 140px; }
-  .view-switch button { flex-basis: calc(50% - 4px); }
 }
 
 @media (prefers-reduced-motion: reduce) {

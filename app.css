@@ -105,13 +105,48 @@ h1 {
   cursor: pointer;
 }
 
-.form-message,
-.sync-message {
+.login-form input:focus-visible,
+.login-form button:focus-visible,
+.quiet-button:focus-visible,
+.course-filter:focus-visible,
+.task-link:focus-visible,
+.aiken-task-link:focus-visible,
+.source-button:focus-visible,
+.course-guide-tab:focus-visible,
+.guide-source-link:focus-visible,
+.calendar-nav-button:focus-visible,
+.calendar-today-button:focus-visible,
+.calendar-day:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 3px;
+}
+
+.form-message {
   min-height: 1.25rem;
   margin: 0;
   color: var(--danger);
   font-size: 0.875rem;
   text-align: center;
+}
+
+.timeline-header,
+.course-guide-header {
+  display: grid;
+  justify-items: center;
+  margin-bottom: 34px;
+}
+
+.timeline-header > p,
+.course-guide-header > p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.timeline-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
 }
 
 .quiet-button {

@@ -1,8 +1,3 @@
-.timeline-view {
-  width: min(100%, 920px);
-  margin-inline: auto;
-}
-
 .timeline-actions {
   display: flex;
   gap: 16px;
@@ -19,37 +14,6 @@
 
 .course-filters[hidden] {
   display: none;
-}
-
-.view-switch {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 3px;
-  margin-top: 16px;
-  padding: 3px;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  background: var(--surface);
-}
-
-.view-switch button {
-  border: 0;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--muted);
-  padding: 7px 12px;
-  cursor: pointer;
-}
-
-.view-switch button[aria-pressed="true"] {
-  background: var(--text);
-  color: var(--page);
-}
-
-.view-switch button:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
 }
 
 .course-filter {

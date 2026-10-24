@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="/assessments.css">
     <link rel="stylesheet" href="/ui/responsive.css">
     <link rel="stylesheet" href="/ui/polish.css">
+    <link rel="stylesheet" href="/ui/workspace.css">
+    <link rel="stylesheet" href="/ui/source-notice.css">
     <script src="/api-client.js" defer></script>
     <script src="/timeline-filters.js" defer></script>
     <script src="/graded-work.js" defer></script>
@@ -30,6 +32,7 @@
     <script src="/ui/timeline.js" defer></script>
     <script src="/ui/graded-work.js" defer></script>
     <script src="/ui/calendar.js" defer></script>
+    <script src="/ui/source-notice.js" defer></script>
     <script src="/app.js" defer></script>
   </head>
   <body>
@@ -58,6 +61,14 @@
       </section>
 
       <section class="timeline-view" id="timeline-view" aria-labelledby="timeline-title" hidden>
+        <nav class="work-contents" aria-label="Coursework views">
+          <div class="work-contents-links">
+            <button type="button" id="all-work-button" aria-pressed="true" aria-controls="timeline"><span>Timeline</span></button>
+            <button type="button" id="calendar-button" aria-pressed="false" aria-controls="calendar"><span>Calendar</span></button>
+            <button type="button" id="graded-work-button" aria-pressed="false" aria-controls="graded-work"><span>Graded work</span></button>
+            <button type="button" id="assessments-button" aria-pressed="false" aria-controls="assessments"><span>Exams &amp; projects</span></button>
+          </div>
+        </nav>
         <header class="timeline-header">
           <a class="product-brand" href="#"><img src="/favicon.svg" width="26" height="26" alt="">Canvas / CourseWorks Secretary</a>
           <h1 id="timeline-title">Your coursework, in view.</h1>
@@ -68,44 +79,40 @@
             <button class="quiet-button" id="logout-button" type="button">Log out</button>
           </div>
           <nav class="course-filters" id="course-filters" aria-label="Courses shown on timeline"></nav>
-          <div class="view-switch" role="group" aria-label="Work display">
-            <button type="button" id="all-work-button" aria-pressed="true">Timeline</button>
-            <button type="button" id="calendar-button" aria-pressed="false">Calendar</button>
-            <button type="button" id="graded-work-button" aria-pressed="false">Graded work</button>
-            <button type="button" id="assessments-button" aria-pressed="false">Exams &amp; projects</button>
-          </div>
-          <p class="sync-message" id="sync-message" aria-live="polite"></p>
         </header>
 
-        <section class="assessments" id="assessments" aria-labelledby="assessments-title" hidden>
-          <div class="assessments-heading">
-            <h2 id="assessments-title">Exams &amp; final projects</h2>
-            <a href="#guide">Course details</a>
-          </div>
-          <div class="assessments-grid" id="assessments-grid"></div>
-          <p class="empty-state" id="assessments-empty">No upcoming exams or major projects are confirmed for these courses. Check the course guide for source details.</p>
-        </section>
-
-        <div class="timeline" id="timeline" aria-live="polite"></div>
-        <section class="calendar" id="calendar" aria-label="Course calendar" hidden>
-          <header class="calendar-toolbar">
-            <button class="calendar-nav-button" id="calendar-previous" type="button" aria-label="Previous month">←</button>
-            <div class="calendar-heading">
-              <h2 id="calendar-month"></h2>
-              <button class="calendar-today-button" id="calendar-today" type="button">Today</button>
+        <div class="work-content">
+          <div class="sync-message" id="sync-message" aria-live="polite"></div>
+          <section class="assessments" id="assessments" aria-labelledby="assessments-title" hidden>
+            <div class="assessments-heading">
+              <h2 id="assessments-title">Exams &amp; final projects</h2>
+              <a href="#guide">Course details</a>
             </div>
-            <button class="calendar-nav-button" id="calendar-next" type="button" aria-label="Next month">→</button>
-          </header>
-          <div class="calendar-weekdays" aria-hidden="true">
-            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
-          </div>
-          <div class="calendar-grid" id="calendar-grid" role="grid" aria-labelledby="calendar-month"></div>
-          <section class="calendar-agenda" aria-labelledby="calendar-agenda-title">
-            <h3 id="calendar-agenda-title"></h3>
-            <div id="calendar-agenda-items"></div>
+            <div class="assessments-grid" id="assessments-grid"></div>
+            <p class="empty-state" id="assessments-empty">No upcoming exams or major projects are confirmed for these courses. Check the course guide for source details.</p>
           </section>
-        </section>
-        <section class="graded-work" id="graded-work" aria-label="Upcoming graded work" aria-live="polite" hidden></section>
+
+          <div class="timeline" id="timeline" aria-live="polite"></div>
+          <section class="calendar" id="calendar" aria-label="Course calendar" hidden>
+            <header class="calendar-toolbar">
+              <button class="calendar-nav-button" id="calendar-previous" type="button" aria-label="Previous month">←</button>
+              <div class="calendar-heading">
+                <h2 id="calendar-month"></h2>
+                <button class="calendar-today-button" id="calendar-today" type="button">Today</button>
+              </div>
+              <button class="calendar-nav-button" id="calendar-next" type="button" aria-label="Next month">→</button>
+            </header>
+            <div class="calendar-weekdays" aria-hidden="true">
+              <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+            </div>
+            <div class="calendar-grid" id="calendar-grid" role="grid" aria-labelledby="calendar-month"></div>
+            <section class="calendar-agenda" aria-labelledby="calendar-agenda-title">
+              <h3 id="calendar-agenda-title"></h3>
+              <div id="calendar-agenda-items"></div>
+            </section>
+          </section>
+          <section class="graded-work" id="graded-work" aria-label="Upcoming graded work" aria-live="polite" hidden></section>
+        </div>
       </section>
 
       <section class="course-guide-view" id="course-guide-view" aria-labelledby="course-guide-title" hidden>

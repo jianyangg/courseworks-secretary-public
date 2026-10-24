@@ -44,7 +44,7 @@ python courseworks.py brief
 python -m uvicorn api.index:app --host 127.0.0.1 --port 8000
 ```
 
-Open [the dashboard on your computer](http://127.0.0.1:8000/) and enter the password you chose. Use at least eight characters and a different password from your school account. Use HTTPS for any online copy.
+Open [the dashboard on your computer](http://127.0.0.1:8000/) and enter the password you chose. There is no default password or preconfigured password hash; each owner runs `web-setup` to create their own. Use at least eight characters and a different password from your school account. Use HTTPS for any online copy.
 
 The token is stored in `.env` with owner-only permissions. The app does not need it to render the demo. Never put it into chat, command arguments, tracked files, screenshots, or issue reports. If exposed, revoke it through Canvas and replace it.
 

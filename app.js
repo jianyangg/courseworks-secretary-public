@@ -40,6 +40,11 @@ if (isDemo) {
   syncButton.textContent = 'Reset demo';
 }
 
+const renderRefreshStatus = createSourceNotice(syncMessage, {
+  isDemo,
+  onDismiss: () => syncButton.focus(),
+});
+
 const hiddenCoursesStorageKey = isDemo ? 'courseworks-demo-hidden-courses' : 'courseworks-hidden-courses';
 
 const linkIcon = `
@@ -170,8 +175,14 @@ function renderCourseFilters(focusCourseKey) {
   if (buttonToFocus) buttonToFocus.focus();
 }
 
+function showSyncError(message) {
+  syncMessage.className = 'sync-message sync-message--error';
+  syncMessage.textContent = message;
+}
+
 function render(data) {
   timelineData = data;
+  renderRefreshStatus(data.warnings);
   let stored = '';
   try {
     stored = localStorage.getItem(hiddenCoursesStorageKey);
@@ -223,7 +234,7 @@ async function loadTimeline() {
     return;
   }
   if (!response.ok) {
-    syncMessage.textContent = payload.error || payload.detail || 'Could not load the timeline.';
+    showSyncError(payload.error || payload.detail || 'Could not load the timeline.');
     return;
   }
   render(payload);
@@ -270,7 +281,7 @@ loginForm.addEventListener('submit', async (event) => {
 syncButton.addEventListener('click', async () => {
   syncButton.disabled = true;
   syncButton.textContent = 'Refreshing…';
-  syncMessage.textContent = '';
+  renderRefreshStatus();
   const { response, payload } = await request('/api/sync', { method: 'POST' });
   syncButton.disabled = false;
   syncButton.textContent = isDemo ? 'Reset demo' : 'Refresh';
@@ -279,13 +290,11 @@ syncButton.addEventListener('click', async () => {
     return;
   }
   if (!response.ok) {
-    syncMessage.textContent = payload.error || payload.detail || 'Refresh failed. Your previously loaded coursework is still shown.';
+    showSyncError(payload.error || payload.detail || 'Refresh failed. Your previously loaded coursework is still shown.');
     return;
   }
   render(payload);
-  syncMessage.textContent = payload.warnings?.length
-    ? `Refresh completed with gaps: ${payload.warnings.join(' ')}`
-    : isDemo ? 'Demo reset.' : 'Coursework refreshed.';
+  renderRefreshStatus(payload.warnings, { refreshed: true });
   guideData = undefined;
 });
 

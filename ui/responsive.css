@@ -64,16 +64,6 @@
     padding-inline: 16px;
   }
 
-  .view-switch {
-    width: 100%;
-  }
-
-  .view-switch button {
-    flex: 1;
-    padding-inline: 7px;
-    font-size: 0.82rem;
-  }
-
   .calendar-toolbar {
     margin-bottom: 12px;
   }
