@@ -13,14 +13,11 @@
 }
 
 .work-contents {
-  grid-column: 1;
-  grid-row: 1 / span 2;
-  align-self: start;
-  justify-self: start;
   width: 164px;
-  position: sticky;
-  top: 32px;
-  padding-top: 4px;
+  position: fixed;
+  top: 16px;
+  left: 20px;
+  z-index: 1;
 }
 
 .work-contents-links {
