@@ -1,8 +1,8 @@
 .timeline-view {
   display: grid;
-  grid-template-columns: 172px minmax(0, 920px);
+  grid-template-columns: minmax(164px, 1fr) minmax(0, 920px) minmax(164px, 1fr);
   column-gap: clamp(28px, 4vw, 64px);
-  width: min(100%, 1156px);
+  width: 100%;
   margin-inline: auto;
 }
 
@@ -16,6 +16,8 @@
   grid-column: 1;
   grid-row: 1 / span 2;
   align-self: start;
+  justify-self: start;
+  width: 164px;
   position: sticky;
   top: 32px;
   padding-top: 4px;
@@ -81,7 +83,7 @@
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1000px) {
   .timeline-view {
     grid-template-columns: minmax(0, 1fr);
     max-width: 720px;
@@ -101,6 +103,7 @@
   .work-contents {
     grid-row: 2;
     position: static;
+    width: 100%;
     margin-bottom: 28px;
     padding: 0;
   }
