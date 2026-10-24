@@ -1,6 +1,6 @@
 # Interface and password setup checks — October 23, 2026
 
-The work views use a compact list on the left without a heading or border. The active view is slightly larger and heavier, with brief hover and selection transitions. Reduced-motion preferences disable the transitions. The source availability notice can be dismissed; refresh or changed source warnings bring it back.
+The work views use a compact list on the left without a heading or border. The active view is slightly larger and heavier, with brief hover and selection transitions. Reduced-motion preferences disable the transitions. The source availability notice can be dismissed. Dismissal persists across page reloads until the next successful sync.
 
 Each installation starts without a dashboard password or password hash. The owner runs `python courseworks.py web-setup` to choose a password and generate a salted password hash and fresh session and cron secrets in the ignored, owner-readable `.env` file. Login returns HTTP 503 until authentication is configured.
 

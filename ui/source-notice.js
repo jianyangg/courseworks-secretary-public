@@ -1,8 +1,31 @@
 function createSourceNotice(container, { isDemo = false, onDismiss = () => {} } = {}) {
-  let dismissedSignature;
-  return function renderRefreshStatus(warnings = [], { refreshed = false } = {}) {
+  const storageKey = isDemo ? 'courseworks-demo-dismissed-source-sync' : 'courseworks-dismissed-source-sync';
+  let storage;
+  let dismissedSyncId = null;
+  try {
+    storage = globalThis.localStorage;
+    dismissedSyncId = storage?.getItem(storageKey) ?? null;
+  } catch (_error) {
+    // Dismissal still works for this page when browser storage is unavailable.
+  }
+
+  function rememberDismissal(syncId) {
+    dismissedSyncId = syncId;
+    try {
+      if (syncId === null) storage?.removeItem(storageKey);
+      else storage?.setItem(storageKey, syncId);
+    } catch (_error) {
+      // Keep the in-memory preference when storage is blocked or full.
+    }
+  }
+
+  return function renderRefreshStatus(warnings = [], { refreshed = false, syncId } = {}) {
     container.replaceChildren();
     container.className = 'sync-message';
+    const currentSyncId = syncId ?? dismissedSyncId ?? '';
+    if (refreshed || (syncId !== undefined && dismissedSyncId !== null && syncId !== dismissedSyncId)) {
+      rememberDismissal(null);
+    }
     const messages = [...new Set((Array.isArray(warnings) ? warnings : [])
       .filter((warning) => typeof warning === 'string'))];
     if (!messages.length) {
@@ -10,9 +33,7 @@ function createSourceNotice(container, { isDemo = false, onDismiss = () => {} } 
       return;
     }
 
-    const signature = JSON.stringify([...messages].sort());
-    if (refreshed) dismissedSignature = undefined;
-    if (signature === dismissedSignature) return;
+    if (currentSyncId === dismissedSyncId) return;
 
     const filePattern = /^(.+): could not read files \(CourseWorks API request failed with HTTP 403\)$/;
     const fileCourses = [];
@@ -78,7 +99,7 @@ function createSourceNotice(container, { isDemo = false, onDismiss = () => {} } 
     dismiss.setAttribute('aria-label', 'Dismiss source availability notice');
     dismiss.textContent = '×';
     dismiss.addEventListener('click', () => {
-      dismissedSignature = signature;
+      rememberDismissal(currentSyncId);
       container.replaceChildren();
       onDismiss();
     });

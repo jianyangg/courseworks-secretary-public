@@ -182,7 +182,7 @@ function showSyncError(message) {
 
 function render(data) {
   timelineData = data;
-  renderRefreshStatus(data.warnings);
+  renderRefreshStatus(data.warnings, { syncId: data.syncedAt || data.generatedAt });
   let stored = '';
   try {
     stored = localStorage.getItem(hiddenCoursesStorageKey);
@@ -294,7 +294,10 @@ syncButton.addEventListener('click', async () => {
     return;
   }
   render(payload);
-  renderRefreshStatus(payload.warnings, { refreshed: true });
+  renderRefreshStatus(payload.warnings, {
+    refreshed: true,
+    syncId: payload.syncedAt || payload.generatedAt,
+  });
   guideData = undefined;
 });
 

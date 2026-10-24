@@ -17,7 +17,17 @@ global.document = { createElement: element };
 
 const fileWarning = 'Robotics: could not read files (CourseWorks API request failed with HTTP 403)';
 
-function setup(isDemo = false) {
+function memoryStorage() {
+  const values = new Map();
+  return {
+    getItem: key => values.get(key) ?? null,
+    setItem: (key, value) => values.set(key, value),
+    removeItem: key => values.delete(key),
+  };
+}
+
+function setup(isDemo = false, storage = memoryStorage()) {
+  global.localStorage = storage;
   const container = element('div');
   return { container, render: createSourceNotice(container, { isDemo }) };
 }
@@ -50,7 +60,7 @@ test('dismissed warnings stay hidden on re-render, but refresh shows them again'
   assert.equal(container.children.length, 1);
 });
 
-test('changed warnings are shown after dismissal, independent of warning order', () => {
+test('changed warnings stay dismissed until another sync', () => {
   const { container, render } = setup();
   const warning = 'Canvas assignments unavailable';
   render([fileWarning, warning]);
@@ -58,6 +68,59 @@ test('changed warnings are shown after dismissal, independent of warning order',
   render([warning, fileWarning]);
   assert.equal(container.children.length, 0);
   render(['Ed discussions unavailable']);
+  assert.equal(container.children.length, 0);
+});
+
+test('dismissal survives page reloads until the snapshot has a new sync timestamp', () => {
+  const storage = memoryStorage();
+  const first = setup(false, storage);
+  first.render([fileWarning], { syncId: 'first-sync' });
+  dismiss(first.container);
+  const reloaded = setup(false, storage);
+  reloaded.render([fileWarning], { syncId: 'first-sync' });
+  assert.equal(reloaded.container.children.length, 0);
+  reloaded.render([fileWarning], { syncId: 'next-sync' });
+  assert.equal(reloaded.container.children.length, 1);
+  const afterSync = setup(false, storage);
+  afterSync.render([fileWarning], { syncId: 'next-sync' });
+  assert.equal(afterSync.container.children.length, 1);
+});
+
+test('a failed refresh does not forget dismissal and a successful sync does', () => {
+  const storage = memoryStorage();
+  const { container, render } = setup(false, storage);
+  render([fileWarning], { syncId: 'same-sync' });
+  dismiss(container);
+  render();
+  const reloaded = setup(false, storage);
+  reloaded.render([fileWarning], { syncId: 'same-sync' });
+  assert.equal(reloaded.container.children.length, 0);
+  reloaded.render([], { refreshed: true, syncId: 'next-sync' });
+  const afterSync = setup(false, storage);
+  afterSync.render([fileWarning], { syncId: 'next-sync' });
+  assert.equal(afterSync.container.children.length, 1);
+});
+
+test('demo dismissal does not hide the personal dashboard notice', () => {
+  const storage = memoryStorage();
+  const demo = setup(true, storage);
+  demo.render([fileWarning]);
+  dismiss(demo.container);
+  const personal = setup(false, storage);
+  personal.render([fileWarning]);
+  assert.equal(personal.container.children.length, 1);
+});
+
+test('dismissal still works for this page when browser storage is unavailable', () => {
+  const unavailable = () => { throw new Error('Storage blocked'); };
+  const { container, render } = setup(false, {
+    getItem: unavailable, setItem: unavailable, removeItem: unavailable,
+  });
+  render([fileWarning]);
+  dismiss(container);
+  render(['Changed warning']);
+  assert.equal(container.children.length, 0);
+  render([fileWarning], { refreshed: true });
   assert.equal(container.children.length, 1);
 });
 
