@@ -78,11 +78,18 @@ def guide_record_key(course: dict, item: dict, url, links: list) -> str | None:
     explicit = item.get("canvasAssignmentId")
     if parent and explicit is not None:
         return f"{parent}/assignments/{explicit}"
-    linked = resource_key(url)
+    # Announcements can describe several independent tasks. Their source URL
+    # identifies the evidence, rather than any one assignment.
+    linked = _guide_assignment_key(url)
     if linked:
         return linked
-    references = {key for link in links if (key := resource_key(link.get("url")))}
+    references = {key for link in links if (key := _guide_assignment_key(link.get("url")))}
     return references.pop() if len(references) == 1 else None
+
+
+def _guide_assignment_key(url) -> str | None:
+    key = resource_key(url)
+    return key if key and '/discussion_topics/' not in key else None
 
 
 def is_preparation(task: dict) -> bool:
@@ -91,6 +98,9 @@ def is_preparation(task: dict) -> bool:
 
 def matching_task(candidate: dict, tasks: list, zone) -> dict | None:
     aliases = {comparison_key(alias) for alias in candidate.get("courseAliases") or []}
+    # Synced records that could be this reviewed entry under a different name.
+    # Used only when no exact match exists and exactly one record qualifies.
+    renamed = []
     for task in tasks:
         preparation_annotation = (
             candidate.get("reviewed") and is_preparation(candidate) and not task.get("reviewed") and not task.get("completed")
@@ -117,7 +127,46 @@ def matching_task(candidate: dict, tasks: list, zone) -> dict | None:
         if (same_course and comparison_key(candidate["title"]) == comparison_key(task["title"])
                 and candidate["due"].astimezone(zone).date() == task["due"].astimezone(zone).date()):
             return task
-    return None
+        if same_course and _could_be_renamed(candidate, task, zone):
+            renamed.append(task)
+    # Ambiguity means two separate pieces of work; keep them apart.
+    return renamed[0] if len(renamed) == 1 else None
+
+
+def _could_be_renamed(candidate: dict, task: dict, zone) -> bool:
+    """Whether a reviewed guide entry and a synced record are one deadline under two names.
+
+    Course guides name work the way the syllabus does ("Homework 4"), while
+    Canvas often uses the instructor's own label ("HW4 Assignment"). Rather than
+    keeping a list of abbreviations, rely on facts that do not depend on wording:
+    the same course (checked by the caller), the same deadline, and the same
+    numbering. The caller also requires the pair to be the only candidate.
+    """
+    # Only pair a reviewed entry with a synced record, and each record at most
+    # once, so two guide entries can never collapse into one Canvas assignment.
+    if not candidate.get("reviewed") or task.get("reviewed") or task.get("matchedGuide"):
+        return False
+    if candidate.get("deadlineIsDateOnly"):
+        same_deadline = candidate["due"].astimezone(zone).date() == task["due"].astimezone(zone).date()
+    else:
+        # Guides record minutes ("11:59 PM"); Canvas often stores 11:59:59.
+        same_deadline = abs((candidate["due"] - task["due"]).total_seconds()) < 120
+    if not same_deadline:
+        return False
+    numbers, other_numbers = _title_numbers(candidate["title"]), _title_numbers(task["title"])
+    if numbers != other_numbers:
+        return False
+    # Without a shared number, require a shared word so that two unrelated
+    # unnumbered items due at the same minute stay separate.
+    return bool(numbers) or bool(_title_words(candidate["title"]) & _title_words(task["title"]))
+
+
+def _title_numbers(title: str) -> set[str]:
+    return {number.lstrip("0") or "0" for number in re.findall(r"\d+", title)}
+
+
+def _title_words(title: str) -> set[str]:
+    return {word for word in re.findall(r"[a-z]{3,}", title.lower())}
 
 
 def merge_task(target: dict, incoming: dict, zone) -> None:
@@ -133,6 +182,8 @@ def merge_task(target: dict, incoming: dict, zone) -> None:
     target["completed"] = bool(target.get("completed") or incoming.get("completed"))
     if incoming.get("detail"):
         target["detail"] = incoming["detail"]
+    if incoming.get("reviewed"):
+        target["matchedGuide"] = True
     if incoming.get("reviewed") and incoming["title"] != target["title"]:
         target["guideTitle"] = incoming["title"]
     if incoming.get("showInAssessmentOverview"):
@@ -147,7 +198,9 @@ def merge_task(target: dict, incoming: dict, zone) -> None:
         target["isGraded"] = incoming["isGraded"] is True
     if incoming.get("reviewed"):
         same_day = target["due"].astimezone(zone).date() == incoming["due"].astimezone(zone).date()
-        if not same_day or (not incoming.get("deadlineIsDateOnly") and target["due"] != incoming["due"]):
+        same_minute = (target['due'].replace(second=0, microsecond=0)
+                       == incoming['due'].replace(second=0, microsecond=0))
+        if not same_day or (not incoming.get("deadlineIsDateOnly") and not same_minute):
             target["deadlineConflict"] = {
                 "synced": target["due"].isoformat(), "reviewed": incoming["due"].isoformat(),
             }

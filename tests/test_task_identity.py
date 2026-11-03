@@ -51,6 +51,70 @@ class TaskIdentityTests(unittest.TestCase):
         self.assertEqual(rows[0]["dueAt"], "2026-11-01T23:59:00-05:00")
         self.assertTrue(rows[0]["deadlineConflict"])
 
+    def test_guide_minute_precision_does_not_conflict_with_canvas_seconds(self):
+        self.snapshot['courses'][0]['assignments'][0]['due_at'] = '2026-11-01T23:59:59-05:00'
+        self.assertIsNone(self.rows()[0]['deadlineConflict'])
+        self.item['deadlineTime'] = '11:58 PM'
+        self.assertIsNotNone(self.rows()[0]['deadlineConflict'])
+
+    def unlinked_item(self, title, **fields):
+        # A guide entry citing only an external page: no Canvas id to match on,
+        # and a Canvas title that differs from the guide's wording.
+        self.item.update({"title": title, "sourceUrl": "https://example.edu/hw3.pdf", **fields})
+        self.snapshot["courses"][0]["assignments"][0]["name"] = "HW3 Assignment"
+
+    def test_unlinked_renamed_entry_merges_on_course_deadline_and_number(self):
+        self.unlinked_item("Homework 3")
+        self.snapshot["courses"][0]["assignments"][0]["due_at"] = "2026-11-01T23:59:59-05:00"
+        rows = self.rows()
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["guideTitle"], "Homework 3")
+
+    def test_submitting_the_canvas_assignment_hides_its_unlinked_guide_entry(self):
+        self.unlinked_item("Homework 3")
+        self.snapshot["courses"][0]["assignments"][0]["submitted"] = True
+        self.assertEqual(self.rows(), [])
+
+    def test_unlinked_entries_with_different_numbers_stay_separate(self):
+        self.unlinked_item("Homework 4")
+        self.assertEqual(len(self.rows()), 2)
+
+    def test_unlinked_entry_due_at_another_time_stays_separate(self):
+        self.unlinked_item("Homework 3", deadlineTime="10:00 AM")
+        self.assertEqual(len(self.rows()), 2)
+
+    def test_ambiguous_unlinked_entry_is_not_merged(self):
+        # Two Canvas records fit equally well, so neither is chosen.
+        self.unlinked_item("Homework 3")
+        twin = deepcopy(self.snapshot["courses"][0]["assignments"][0])
+        twin.update(id=201, name="HW3 Written", html_url=ASSIGNMENT_URL.replace("200", "201"))
+        self.snapshot["courses"][0]["assignments"].append(twin)
+        self.assertEqual(len(self.rows()), 3)
+
+    def test_unnumbered_entries_need_a_shared_word(self):
+        self.unlinked_item("Round A attack PoCs")
+        self.snapshot["courses"][0]["assignments"][0]["name"] = "Attack PoCs for Round A"
+        self.assertEqual(len(self.rows()), 1)
+        self.unlinked_item("Reading response")
+        self.snapshot["courses"][0]["assignments"][0]["name"] = "Attack PoCs for Round A"
+        self.assertEqual(len(self.rows()), 2)
+
+    def test_two_guide_entries_cannot_claim_one_canvas_assignment(self):
+        self.unlinked_item("Homework 3")
+        self.guide["courses"][0]["sections"][0]["items"].append(
+            {**self.item, "title": "Homework 3 write-up"})
+        titles = sorted(row["title"] for row in self.rows())
+        self.assertEqual(titles, ["HW3 Assignment", "Homework 3 write-up"])
+
+    def test_distinct_tasks_from_one_announcement_are_not_the_same_record(self):
+        self.snapshot = {'courses': []}
+        self.item['sourceUrl'] = 'https://courseworks2.columbia.edu/courses/100/discussion_topics/300'
+        other = {**self.item, 'title': 'Another workshop', 'dueOn': '2026-11-02'}
+        self.guide['courses'][0]['sections'][0]['items'].append(other)
+        rows = self.rows()
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(len({row['id'] for row in rows}), 2)
+
     def test_submitted_assignment_suppresses_linked_guide_deadline(self):
         self.snapshot["courses"][0]["assignments"][0]["submitted"] = True
         self.assertEqual(self.rows(), [])
