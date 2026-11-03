@@ -5,7 +5,7 @@ from zoneinfo import ZoneInfo
 
 from courseworks_secretary.source_links import assignment_links, safe_courseworks_url
 from courseworks_secretary.web.curated_timeline import curated_tasks
-from .task_identity import canvas_record_key, course_key, is_preparation, matching_task, merge_task, stable_task_id
+from .task_identity import canvas_alias_keys, canvas_record_key, course_key, identity_keys, is_preparation, matching_task, merge_task, stable_task_id
 from ..config import TIME_ZONE
 
 
@@ -34,8 +34,9 @@ def build_timeline(
         )
         for assignment in course.get("assignments") or []:
             record_key = canvas_record_key(course, assignment)
-            if assignment.get("submitted") and record_key:
-                completed_keys.add(record_key)
+            alias_keys = canvas_alias_keys(course, assignment)
+            if assignment.get("submitted"):
+                completed_keys.update(identity_keys({"recordKey": record_key, "aliasKeys": alias_keys}))
             due = _parse_date(assignment.get("due_at"))
             if due is None:
                 continue
@@ -43,6 +44,7 @@ def build_timeline(
             tasks.append(
                 {
                     "recordKey": record_key,
+                    "aliasKeys": alias_keys,
                     "courseKey": course_key(course),
                     "completed": bool(assignment.get("submitted")),
                     "title": _clean_title(
@@ -56,7 +58,7 @@ def build_timeline(
                     "links": assignment_links(source_url, assignment.get("external_links")),
                     "sourceLabel": "CourseWorks",
                     "kind": "task",
-                    "typeLabel": "Assignment",
+                    "typeLabel": _assignment_type_label(assignment),
                     "isGraded": (
                         _has_points(assignment.get("points_possible"))
                         and not assignment.get("omit_from_final_grade")
@@ -77,6 +79,7 @@ def build_timeline(
             source_url = safe_courseworks_url(planner_item.get("html_url"))
             candidate = {
                 "recordKey": canvas_record_key(course, planner_item, planner_type),
+                "aliasKeys": canvas_alias_keys(course, planner_item, planner_type),
                 "courseKey": course_key(course),
                 "completed": bool(planner_item.get("completed")),
                 "title": _clean_title(
@@ -257,6 +260,14 @@ def _deadline_label(deadline: datetime, now: datetime) -> str:
 
 def _clean_title(value: str) -> str:
     return re.sub(r"\s*\bFA\s*\d{4}\b\s*", " ", value, flags=re.IGNORECASE).strip()
+
+
+def _assignment_type_label(assignment: Dict[str, Any]) -> str:
+    if assignment.get("quiz_id") is not None:
+        return "Quiz"
+    if assignment.get("discussion_topic_id") is not None:
+        return "Discussion"
+    return "Assignment"
 
 
 def _planner_type_label(value: Any) -> str:

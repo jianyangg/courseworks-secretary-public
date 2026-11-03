@@ -99,6 +99,44 @@ class TaskIdentityTests(unittest.TestCase):
         }]
         self.assertEqual(len(self.rows()), 1)
 
+    def test_quiz_assignment_and_planner_quiz_are_one_task(self):
+        # Canvas exposes a classic quiz as /assignments/A and /quizzes/Q.
+        self.guide = None
+        self.snapshot["courses"][0]["assignments"][0]["quiz_id"] = 300
+        self.snapshot["courses"][0]["planner_items"] = [{
+            "id": 300, "type": "quiz", "title": "Homework 3",
+            "due_at": "2026-11-01T23:59:00-05:00",
+            "html_url": "https://courseworks2.columbia.edu/courses/100/quizzes/300",
+        }]
+        rows = self.rows()
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["typeLabel"], "Quiz")
+
+    def test_planner_quiz_names_its_backing_assignment(self):
+        self.guide = None
+        self.snapshot["courses"][0]["planner_items"] = [{
+            "id": 300, "assignment_id": 200, "type": "quiz", "title": "Homework 3",
+            "due_at": "2026-11-01T23:59:00-05:00",
+            "html_url": "https://courseworks2.columbia.edu/courses/100/quizzes/300",
+        }]
+        self.assertEqual(len(self.rows()), 1)
+
+    def test_submitted_quiz_hides_guide_deadline_pointing_at_quiz_url(self):
+        assignment = self.snapshot["courses"][0]["assignments"][0]
+        assignment.update(quiz_id=300, submitted=True)
+        self.item["sourceUrl"] = "https://courseworks2.columbia.edu/courses/100/quizzes/300"
+        self.assertEqual(self.rows(), [])
+
+    def test_unrelated_quiz_with_same_title_stays_separate(self):
+        self.guide = None
+        self.snapshot["courses"][0]["assignments"][0]["quiz_id"] = 300
+        self.snapshot["courses"][0]["planner_items"] = [{
+            "id": 301, "type": "quiz", "title": "Homework 3",
+            "due_at": "2026-11-01T23:59:00-05:00",
+            "html_url": "https://courseworks2.columbia.edu/courses/100/quizzes/301",
+        }]
+        self.assertEqual(len(self.rows()), 2)
+
     def test_record_identity_is_stable_across_guide_names(self):
         first = self.rows()[0]
         self.item["title"] = "A much longer description"

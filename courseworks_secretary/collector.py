@@ -119,6 +119,11 @@ def _assignment(item: Dict[str, Any]) -> Dict[str, Any]:
         "unlock_at": item.get("unlock_at"),
         "lock_at": item.get("lock_at"),
         "html_url": item.get("html_url"),
+        # Classic quizzes and graded discussions are one piece of work stored as
+        # two Canvas records. Keeping the counterpart id lets the timeline treat
+        # /assignments/A and /quizzes/Q as the same deadline.
+        "quiz_id": item.get("quiz_id"),
+        "discussion_topic_id": (item.get("discussion_topic") or {}).get("id"),
         "description_text": html_to_text(item.get("description")),
         "external_links": external_links_from_html(item.get("description")),
         "points_possible": item.get("points_possible"),
@@ -152,6 +157,9 @@ def _planner_item(item: Dict[str, Any]) -> Dict[str, Any]:
     return {
         "id": item.get("plannable_id") or plannable.get("id"),
         "type": item.get("plannable_type"),
+        # A planner quiz or graded discussion names its backing assignment.
+        "assignment_id": plannable.get("assignment_id")
+        or (plannable.get("assignment") or {}).get("id"),
         "title": (
             plannable.get("title")
             or plannable.get("name")

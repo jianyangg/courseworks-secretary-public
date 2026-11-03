@@ -36,15 +36,40 @@ def course_key(course: dict) -> str | None:
     return None
 
 
+CANVAS_COLLECTIONS = {"assignment": "assignments", "quiz": "quizzes", "discussion_topic": "discussion_topics"}
+
+
 def canvas_record_key(course: dict, record: dict, record_type="assignment") -> str | None:
+    # A quiz or graded discussion in the planner is backed by an assignment;
+    # naming it by that assignment gives both views one canonical identity.
+    if record_type != "assignment" and (backing := _canvas_key(course, "assignment", record.get("assignment_id"))):
+        return backing
     linked = resource_key(record.get("html_url"))
     if linked:
         return linked
-    kinds = {"assignment": "assignments", "quiz": "quizzes", "discussion_topic": "discussion_topics"}
+    return _canvas_key(course, record_type, record.get("id"))
+
+
+def canvas_alias_keys(course: dict, record: dict, record_type="assignment") -> list[str]:
+    """Other Canvas URLs for the same work, e.g. /quizzes/Q behind /assignments/A."""
+    if record_type == "assignment":
+        counterparts = (("quiz", record.get("quiz_id")), ("discussion_topic", record.get("discussion_topic_id")))
+    else:
+        counterparts = ((record_type, record.get("id")),)
+    primary = canvas_record_key(course, record, record_type)
+    keys = [_canvas_key(course, kind, identifier) for kind, identifier in counterparts]
+    keys.append(resource_key(record.get("html_url")))
+    return list(dict.fromkeys(key for key in keys if key and key != primary))
+
+
+def identity_keys(task: dict) -> set[str]:
+    return {key for key in (task.get("recordKey"), *(task.get("aliasKeys") or [])) if key}
+
+
+def _canvas_key(course: dict, record_type: str, identifier) -> str | None:
     parent = course_key(course)
-    identifier = record.get("id")
-    if parent and record_type in kinds and identifier is not None:
-        return f"{parent}/{kinds[record_type]}/{identifier}"
+    if parent and record_type in CANVAS_COLLECTIONS and identifier is not None:
+        return f"{parent}/{CANVAS_COLLECTIONS[record_type]}/{identifier}"
     return None
 
 
@@ -75,9 +100,9 @@ def matching_task(candidate: dict, tasks: list, zone) -> dict | None:
         if (is_preparation(candidate) != is_preparation(task) and not preparation_annotation
                 or candidate.get("kind") != task.get("kind")):
             continue
-        first, second = candidate.get("recordKey"), task.get("recordKey")
+        first, second = identity_keys(candidate), identity_keys(task)
         if first and second:
-            if first == second:
+            if first & second:
                 if ((candidate.get("occurrenceDate") or task.get("occurrenceDate"))
                         and candidate["due"].astimezone(zone).date() != task["due"].astimezone(zone).date()):
                     continue
@@ -114,6 +139,8 @@ def merge_task(target: dict, incoming: dict, zone) -> None:
         target["showInAssessmentOverview"] = True
     if incoming.get("recordKey"):
         target["recordKey"] = target.get("recordKey") or incoming["recordKey"]
+    aliases = identity_keys(target) | identity_keys(incoming)
+    target["aliasKeys"] = sorted(aliases - {target.get("recordKey")})
     if is_preparation(incoming):
         target["isPreparation"] = True
     if incoming.get("isGraded") is not None and incoming.get("reviewed"):

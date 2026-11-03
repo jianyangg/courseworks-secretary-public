@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timezone
 
-from courseworks_secretary.collector import _assignment, _page, collect_snapshot
+from courseworks_secretary.collector import _assignment, _page, _planner_item, collect_snapshot
 
 
 class FakeClient:
@@ -113,6 +113,12 @@ class CollectorTests(unittest.TestCase):
         self.assertEqual(course["discussion_topics"][0]["message_text"], "Bring your draft.")
         self.assertEqual(course["files"][0]["html_url"], "https://courseworks2.columbia.edu/courses/10/files/99")
         self.assertNotIn("verifier", str(course["files"]))
+
+    def test_quiz_records_keep_their_counterpart_ids(self):
+        planner = _planner_item({"plannable_type": "quiz", "plannable_id": 9, "plannable": {"assignment_id": 7}})
+        assignment = _assignment({"id": 7, "quiz_id": 9, "discussion_topic": {"id": 11}})
+        self.assertEqual(planner["assignment_id"], 7)
+        self.assertEqual((assignment["quiz_id"], assignment["discussion_topic_id"]), (9, 11))
 
 
 if __name__ == "__main__":
