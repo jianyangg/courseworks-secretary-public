@@ -121,5 +121,16 @@ class CollectorTests(unittest.TestCase):
         self.assertEqual((assignment["quiz_id"], assignment["discussion_topic_id"]), (9, 11))
 
 
+class FailedSourceTests(unittest.TestCase):
+    def test_failed_reads_are_recorded_per_course(self):
+        class FilesForbidden(FakeClient):
+            def files(self, course_id):
+                raise RuntimeError("HTTP 403")
+
+        snapshot = collect_snapshot(FilesForbidden(), now=datetime(2026, 11, 3, tzinfo=timezone.utc))
+        self.assertEqual(snapshot["courses"][0]["failed_sources"], ["files"])
+        self.assertEqual(snapshot["warnings"], ["Robotics: could not read files (HTTP 403)"])
+
+
 if __name__ == "__main__":
     unittest.main()

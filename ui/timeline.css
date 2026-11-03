@@ -362,3 +362,79 @@
 .past-timeline .course-dot {
   background: var(--course-color);
 }
+
+/* What changed: recent CourseWorks edits shown above the timeline. */
+.change-feed {
+  margin: 0 0 28px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.change-feed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 12px 6px 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.change-feed h2 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 550;
+}
+
+.change-feed ul {
+  margin: 0;
+  padding: 0 16px;
+  list-style: none;
+}
+
+.change-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.change-item:last-child {
+  border-bottom: 0;
+}
+
+.change-badge {
+  min-width: 7.5em;
+  padding-top: 2px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Moved deadlines and removals are the edits most likely to break a plan. */
+.change-item[data-kind="due_changed"] .change-badge,
+.change-item[data-kind="removed_assignment"] .change-badge {
+  color: var(--soon);
+}
+
+.change-item .task-link {
+  opacity: 1;
+  transform: none;
+}
+
+.undated-list {
+  padding-left: 21px;
+}
+
+@media (max-width: 560px) {
+  .change-item {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .change-badge {
+    grid-column: 1 / -1;
+    padding-top: 0;
+  }
+}

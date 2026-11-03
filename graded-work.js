@@ -26,5 +26,22 @@
       .sort((a, b) => new Date(a.deadlineAt || a.dueAt) - new Date(b.deadlineAt || b.dueAt));
   }
 
-  return { gradedTasks, daysLeftLabel };
+  // Graded assignments CourseWorks lists without a due date. They have no
+  // countdown, so they are shown separately rather than sorted among deadlines.
+  function undatedGradedTasks(data) {
+    return (data.undated || []).filter((task) => task.isGraded);
+  }
+
+  // Graded work the viewer marked done, nearest deadline first, undated last.
+  function doneGradedTasks(data) {
+    const deadline = (task) => {
+      const value = task.deadlineAt || task.dueAt;
+      return value ? new Date(value).getTime() : Infinity;
+    };
+    return (data.doneTasks || [])
+      .filter((task) => task.isGraded)
+      .sort((a, b) => deadline(a) - deadline(b));
+  }
+
+  return { gradedTasks, undatedGradedTasks, doneGradedTasks, daysLeftLabel };
 }));

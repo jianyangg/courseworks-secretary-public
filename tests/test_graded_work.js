@@ -25,3 +25,18 @@ test('uses the actual deadline when preparation started earlier', () => {
   assert.equal(gradedTasks(data, new Date('2026-10-20T12:00:00Z')).length, 1);
   assert.equal(daysLeftLabel('2026-10-21T01:00:00Z', new Date('2026-10-20T12:00:00Z'), 'Asia/Singapore'), 'Due tomorrow');
 });
+
+test('lists undated graded work and done graded work separately', () => {
+  const { undatedGradedTasks, doneGradedTasks } = require('../graded-work.js');
+  const data = {
+    undated: [{ title: 'Essay', isGraded: true }, { title: 'Reading', isGraded: false }],
+    doneTasks: [
+      { title: 'Undated done', isGraded: true },
+      { title: 'Later', isGraded: true, dueAt: '2026-11-10T23:59:00-05:00' },
+      { title: 'Sooner', isGraded: true, dueAt: '2026-11-05T23:59:00-05:00' },
+      { title: 'Prep', isGraded: false, dueAt: '2026-11-04T23:59:00-05:00' },
+    ],
+  };
+  assert.deepEqual(undatedGradedTasks(data).map((task) => task.title), ['Essay']);
+  assert.deepEqual(doneGradedTasks(data).map((task) => task.title), ['Sooner', 'Later', 'Undated done']);
+});

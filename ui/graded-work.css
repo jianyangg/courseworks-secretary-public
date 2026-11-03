@@ -65,3 +65,68 @@
 .graded-work-selection input { margin-top: 4px; accent-color: var(--accent); }
 
 .graded-work > button:disabled { opacity: 0.5; cursor: default; }
+
+.graded-work-section {
+  margin: 32px 0 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.graded-work-due .graded-work-undated {
+  color: var(--muted);
+}
+
+/* Text-style button so "Mark done" stays secondary to the source links. */
+.graded-work-done {
+  min-height: 32px;
+  margin-inline-start: auto;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.8rem;
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.graded-work-done:hover {
+  color: var(--accent);
+}
+
+.graded-work-done:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.graded-work-done-list {
+  margin-top: 28px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.graded-work-done-list summary {
+  min-height: 36px;
+  cursor: pointer;
+}
+
+.graded-work-done-list ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.graded-work-done-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.graded-work-done-list li .graded-work-done {
+  margin-inline-start: 0;
+}

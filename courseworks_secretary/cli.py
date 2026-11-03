@@ -4,6 +4,7 @@ from pathlib import Path
 
 from .briefing import render_briefing
 from .canvas import CanvasClient
+from .changes import record_changes
 from .collector import collect_snapshot
 from .config import BASE_URL, BRIEFING_PATH, SNAPSHOT_PATH
 from .credentials import MissingCredentialError, initialize_env_file, load_token
@@ -55,7 +56,8 @@ def main() -> int:
             print("Connected to CourseWorks as {}.".format(profile.get("name", "your account")))
             return 0
 
-        snapshot = collect_snapshot(client)
+        previous = json.loads(args.snapshot.read_text()) if args.snapshot.exists() else None
+        snapshot = record_changes(collect_snapshot(client), previous)
         _write_json(args.snapshot, snapshot)
         print("Saved snapshot to {}".format(args.snapshot))
         if args.command == "brief":

@@ -21,12 +21,16 @@ def collect_snapshot(client, now: Optional[datetime] = None) -> Dict[str, Any]:
             "html_url": raw_course.get("html_url"),
             "term": raw_course.get("term"),
             "syllabus_text": html_to_text(raw_course.get("syllabus_body")),
+            # Sources that could not be read this sync. Change detection uses
+            # this to tell "the course has no assignments" apart from "we could
+            # not see the assignments", which would otherwise look like removals.
+            "failed_sources": [],
         }
         course["assignments"] = _safe(
             lambda: [_assignment(item) for item in client.assignments(course_id)],
             [],
             warnings,
-            course["name"],
+            course,
             "assignments",
         )
         course["announcements"] = _safe(
@@ -38,7 +42,7 @@ def collect_snapshot(client, now: Optional[datetime] = None) -> Dict[str, Any]:
             ],
             [],
             warnings,
-            course["name"],
+            course,
             "announcements",
         )
         course["planner_items"] = _safe(
@@ -50,7 +54,7 @@ def collect_snapshot(client, now: Optional[datetime] = None) -> Dict[str, Any]:
             ],
             [],
             warnings,
-            course["name"],
+            course,
             "planner items",
         )
         course["discussion_topics"] = _safe(
@@ -60,14 +64,14 @@ def collect_snapshot(client, now: Optional[datetime] = None) -> Dict[str, Any]:
             ],
             [],
             warnings,
-            course["name"],
+            course,
             "discussion topics",
         )
         raw_modules = _safe(
             lambda: client.modules(course_id),
             [],
             warnings,
-            course["name"],
+            course,
             "modules",
         )
         course["modules"] = [_module(item) for item in raw_modules]
@@ -75,12 +79,12 @@ def collect_snapshot(client, now: Optional[datetime] = None) -> Dict[str, Any]:
             lambda: [_page(item) for item in client.pages(course_id, raw_modules)],
             [],
             warnings,
-            course["name"],
+            course,
             "pages",
         )
         course["files"] = _safe(
             lambda: [_file(item, course_id) for item in client.files(course_id)],
-            [], warnings, course["name"], "files",
+            [], warnings, course, "files",
         )
         return course
 
@@ -100,13 +104,14 @@ def _safe(
     operation: Callable[[], Any],
     fallback: Any,
     warnings: List[str],
-    course_name: str,
+    course: Dict[str, Any],
     component: str,
 ):
     try:
         return operation()
     except Exception as error:
-        warnings.append("{}: could not read {} ({})".format(course_name, component, error))
+        warnings.append("{}: could not read {} ({})".format(course["name"], component, error))
+        course["failed_sources"].append(component)
         return fallback
 
 

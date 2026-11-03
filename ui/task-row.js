@@ -23,7 +23,8 @@ function createTask(task) {
   copy.append(title, course);
   const time = document.createElement('time');
   time.className = 'task-time';
-  time.dateTime = task.dueAt;
+  // Undated work has no machine-readable time; only its label is shown.
+  if (task.dueAt) time.dateTime = task.dueAt;
   time.textContent = task.time;
   if (task.isPreparation) {
     time.classList.add('preparation-time');

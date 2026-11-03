@@ -29,6 +29,10 @@ const courseGuideContent = document.getElementById('course-guide-content');
 let guideData;
 let timelineData;
 let hiddenCourseKeys = new Set();
+// Work the viewer marked done that CourseWorks does not know about (e.g. handed
+// in on paper or on another site). Per-browser, like the course filter.
+let doneTaskIds = new Set();
+let seenChangeIds = new Set();
 let displayMode = 'timeline';
 let calendarYear;
 let calendarMonthIndex;
@@ -45,7 +49,10 @@ const renderRefreshStatus = createSourceNotice(syncMessage, {
   onDismiss: () => syncButton.focus(),
 });
 
-const hiddenCoursesStorageKey = isDemo ? 'courseworks-demo-hidden-courses' : 'courseworks-hidden-courses';
+const storagePrefix = isDemo ? 'courseworks-demo-' : 'courseworks-';
+const hiddenCoursesStorageKey = `${storagePrefix}hidden-courses`;
+const doneTasksStorageKey = `${storagePrefix}done-tasks`;
+const seenChangesStorageKey = `${storagePrefix}seen-changes`;
 
 const linkIcon = `
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -122,7 +129,8 @@ function setDisplayMode(mode) {
 }
 
 function renderVisibleWork() {
-  const visible = TimelineFilters.filterTimelineData(timelineData, hiddenCourseKeys);
+  const visible = TimelineFilters.filterTimelineData(timelineData, hiddenCourseKeys, doneTaskIds);
+  visible.changes = visible.changes.filter((change) => !seenChangeIds.has(change.id));
   renderTimelineContent(visible);
   renderCalendar(visible);
   renderGradedWork(visible);
@@ -135,12 +143,34 @@ function renderVisibleWork() {
   }
 }
 
-function saveHiddenCourseKeys() {
+function loadStoredKeys(storageKey, knownKeys) {
+  let stored = '';
   try {
-    localStorage.setItem(hiddenCoursesStorageKey, JSON.stringify([...hiddenCourseKeys]));
+    stored = localStorage.getItem(storageKey);
   } catch (_error) {
-    // Filtering still works for this page load when storage is unavailable.
+    // Use the default state when storage is unavailable.
   }
+  return TimelineFilters.parseStoredKeys(stored, knownKeys);
+}
+
+function saveStoredKeys(storageKey, keys) {
+  try {
+    localStorage.setItem(storageKey, JSON.stringify([...keys]));
+  } catch (_error) {
+    // The preference still applies for this page load when storage is unavailable.
+  }
+}
+
+function toggleTaskDone(taskId) {
+  doneTaskIds = TimelineFilters.toggleKey(doneTaskIds, taskId);
+  saveStoredKeys(doneTasksStorageKey, doneTaskIds);
+  renderVisibleWork();
+}
+
+function markChangesSeen(changes) {
+  seenChangeIds = new Set([...seenChangeIds, ...changes.map((change) => change.id)]);
+  saveStoredKeys(seenChangesStorageKey, seenChangeIds);
+  renderVisibleWork();
 }
 
 function renderCourseFilters(focusCourseKey) {
@@ -163,8 +193,8 @@ function renderCourseFilters(focusCourseKey) {
     label.textContent = course.shortLabel;
     button.append(dot, label);
     button.addEventListener('click', () => {
-      hiddenCourseKeys = TimelineFilters.toggleHiddenCourse(hiddenCourseKeys, course.key);
-      saveHiddenCourseKeys();
+      hiddenCourseKeys = TimelineFilters.toggleKey(hiddenCourseKeys, course.key);
+      saveStoredKeys(hiddenCoursesStorageKey, hiddenCourseKeys);
       renderCourseFilters(course.key);
       renderVisibleWork();
     });
@@ -183,16 +213,11 @@ function showSyncError(message) {
 function render(data) {
   timelineData = data;
   renderRefreshStatus(data.warnings, { syncId: data.syncedAt || data.generatedAt });
-  let stored = '';
-  try {
-    stored = localStorage.getItem(hiddenCoursesStorageKey);
-  } catch (_error) {
-    // Use the default visible state when storage is unavailable.
-  }
-  hiddenCourseKeys = TimelineFilters.parseHiddenCourseKeys(
-    stored,
-    (data.courses || []).map((course) => course.key),
-  );
+  hiddenCourseKeys = loadStoredKeys(hiddenCoursesStorageKey, (data.courses || []).map((course) => course.key));
+  // Done marks are not pruned: a task can be absent from one sync because a
+  // source failed to load, and its mark must still apply when it returns.
+  doneTaskIds = loadStoredKeys(doneTasksStorageKey, null);
+  seenChangeIds = loadStoredKeys(seenChangesStorageKey, (data.changes || []).map((change) => change.id));
   renderCourseFilters();
   renderVisibleWork();
 }
