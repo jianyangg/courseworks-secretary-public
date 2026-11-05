@@ -38,7 +38,6 @@ let seenChangeIds = new Set();
 // Hours the viewer typed for a task, by task id. They take precedence over the
 // course-guide review's estimate and stay in this browser, like done marks.
 let sizeOverrides = new Map();
-let selectedWaveTaskId;
 let displayMode = 'timeline';
 let calendarYear;
 let calendarMonthIndex;

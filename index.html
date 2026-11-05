@@ -116,6 +116,15 @@
             </section>
           </section>
           <section class="wave" id="wave" aria-label="Workload wave" hidden>
+            <div class="wave-toolbar">
+              <div class="wave-range" id="wave-range" role="group" aria-label="Time range">
+                <button type="button" data-days="7" aria-pressed="false">1 wk</button>
+                <button type="button" data-days="14" aria-pressed="true">2 wk</button>
+                <button type="button" data-days="28" aria-pressed="false">4 wk</button>
+                <button type="button" data-days="56" aria-pressed="false">8 wk</button>
+              </div>
+              <button type="button" class="wave-late-toggle" id="wave-late-toggle" aria-pressed="false" hidden>Show late work</button>
+            </div>
             <p class="wave-key">
               <span><i class="wave-key-bar" aria-hidden="true"></i>Bar height = hours (estimate or your size)</span>
               <span><i class="wave-key-ring" aria-hidden="true"></i>Not estimated</span>

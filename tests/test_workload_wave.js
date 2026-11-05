@@ -6,7 +6,9 @@ const {
   effectiveSize,
   formatHours,
   niceCeiling,
+  parseRange,
   parseSizeOverrides,
+  tickStep,
   serializeSizeOverrides,
   withSizeOverride,
 } = require('../workload-wave.js');
@@ -105,4 +107,27 @@ test('axis ceilings and labels stay readable', () => {
   assert.equal(niceCeiling(20), 20);
   assert.equal(formatHours(2), '2 h');
   assert.equal(formatHours(2.25), '2.3 h');
+});
+
+test('hiding late work drops it from the chart and from today\'s pace', () => {
+  const tasks = [{ tasks: [task('late', '2026-11-01T17:00:00Z', 3), task('old', '2026-10-20T17:00:00Z', null)] }];
+  const hidden = buildWave(tasks, new Map(), { ...options, includeOverdue: false });
+  assert.equal(hidden.hiddenOverdueCount, 2);
+  assert.equal(hidden.overdue.total, 0);
+  assert.equal(hidden.unsizedCount, 0);
+  assert.equal(hidden.pace[0].hours, 0);
+  const shown = buildWave(tasks, new Map(), options);
+  assert.equal(shown.hiddenOverdueCount, 0);
+  assert.equal(shown.pace[0].hours, 3);
+});
+
+test('range follows the chosen window and rejects unknown values', () => {
+  const wave = buildWave([{ tasks: [task('day10', '2026-11-15T17:00:00Z', 2)] }], new Map(), { ...options, horizonDays: 7 });
+  assert.equal(wave.days.length, 7);
+  assert.equal(wave.beyond.count, 1);
+  assert.equal(parseRange('7'), 7);
+  assert.equal(parseRange('56'), 56);
+  assert.equal(parseRange('30'), 14);
+  assert.equal(parseRange(null), 14);
+  assert.deepEqual([7, 14, 28, 56].map(tickStep), [1, 2, 7, 7]);
 });

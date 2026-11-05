@@ -65,24 +65,132 @@
   stroke-width: 1.5;
 }
 
-.wave-mark {
-  cursor: pointer;
-  outline: none;
-}
-
-/* Your own sizes get an outline so they stand apart from review estimates. */
-.wave-mark.is-override {
+/* Your own sizes get a dashed outline so they stand apart from estimates. */
+.wave-bar.is-override {
   stroke: var(--text);
   stroke-width: 1.5;
   stroke-dasharray: 3 2;
 }
 
-.wave-mark:hover,
-.wave-mark:focus-visible,
-.wave-mark.is-selected {
-  stroke: var(--text);
-  stroke-width: 2.5;
-  stroke-dasharray: none;
+/* Whole-day click targets: invisible until hovered, focused or selected. */
+.wave-day-target {
+  fill: transparent;
+  outline: none;
+}
+
+.wave-day-target[tabindex="0"] {
+  cursor: pointer;
+}
+
+.wave-day-target[tabindex="0"]:hover {
+  fill: color-mix(in srgb, var(--text) 6%, transparent);
+}
+
+.wave-day-target:focus-visible,
+.wave-day-target.is-selected {
+  fill: color-mix(in srgb, var(--accent) 14%, transparent);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+
+.wave-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 0 14px;
+}
+
+.wave-range {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.wave-range button,
+.wave-late-toggle {
+  padding: 6px 12px;
+  border: 0;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.wave-range button + button {
+  border-left: 1px solid var(--line);
+}
+
+.wave-range button[aria-pressed="true"] {
+  background: var(--text);
+  color: var(--page);
+}
+
+.wave-late-toggle {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.wave-late-toggle[aria-pressed="true"] {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.wave-late-toggle[hidden] {
+  display: none;
+}
+
+.wave-range button:focus-visible,
+.wave-late-toggle:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 2px;
+}
+
+.wave-day h3 {
+  margin: 0 0 4px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.wave-task {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.wave-task-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wave-task-heading h4 {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 550;
+}
+
+.wave-task-dot {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--course-color);
+}
+
+.wave-task-meta {
+  margin: 2px 0 0 17px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.wave-task .wave-size-status,
+.wave-task .wave-size-form,
+.wave-task .wave-size-message {
+  margin-left: 17px;
 }
 
 .wave-note,

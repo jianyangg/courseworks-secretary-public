@@ -83,6 +83,9 @@
       timeZone = 'America/New_York',
       horizonDays = 28,
       spreadDays = 5,
+      // Late work is often already handled but not marked done, so the view
+      // can leave it out entirely: no Late column and no share of today's pace.
+      includeOverdue = true,
     } = options;
     const days = Array.from({ length: horizonDays }, (_value, offset) => ({
       dateKey: keyAtOffset(todayKey, offset),
@@ -93,6 +96,7 @@
     }));
     const overdue = { segments: [], unsized: [], total: 0 };
     const beyond = { count: 0, hours: 0, unsized: 0 };
+    let hiddenOverdueCount = 0;
     const pace = days.map((day) => ({ dateKey: day.dateKey, hours: 0 }));
 
     const tasks = (groups || []).flatMap((group) => group.tasks || [])
@@ -102,6 +106,10 @@
     tasks.forEach((task) => {
       const dateKey = CalendarView.easternDateKey(new Date(deadlineOf(task)), timeZone);
       const offset = dayOffset(todayKey, dateKey);
+      if (offset < 0 && !includeOverdue) {
+        hiddenOverdueCount += 1;
+        return;
+      }
       const size = effectiveSize(task, overrides);
       const segment = size && { task, hours: size.hours, source: size.source };
 
@@ -145,6 +153,8 @@
       pace,
       horizonDays,
       spreadDays,
+      includeOverdue,
+      hiddenOverdueCount,
       totalHours: sizedInHorizon + overdue.total,
       unsizedCount: days.reduce((sum, day) => sum + day.unsized.length, 0) + overdue.unsized.length,
       maxTotal: Math.max(overdue.total, ...days.map((day) => day.total), 0),
@@ -164,7 +174,28 @@
     return `${Number.isInteger(rounded) ? rounded : rounded.toFixed(1)} h`;
   }
 
+  // Ranges the viewer can pick, in days. The default keeps the near term
+  // readable; longer ranges trade bar width for foresight.
+  const RANGE_OPTIONS = [7, 14, 28, 56];
+  const DEFAULT_RANGE = 14;
+
+  function parseRange(value) {
+    const days = Number(value);
+    return RANGE_OPTIONS.includes(days) ? days : DEFAULT_RANGE;
+  }
+
+  // Short ranges label every day or two; long ranges label each week.
+  function tickStep(horizonDays) {
+    if (horizonDays <= 7) return 1;
+    if (horizonDays <= 14) return 2;
+    return 7;
+  }
+
   return {
+    DEFAULT_RANGE,
+    RANGE_OPTIONS,
+    parseRange,
+    tickStep,
     MAX_HOURS,
     buildWave,
     dayOffset,
