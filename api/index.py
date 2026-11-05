@@ -81,6 +81,11 @@ def calendar_view_script():
     return FileResponse(ROOT / "calendar-view.js", media_type="text/javascript")
 
 
+@app.get("/workload-wave.js")
+def workload_wave_script():
+    return FileResponse(ROOT / "workload-wave.js", media_type="text/javascript")
+
+
 @app.get("/aiken-integration.js")
 def aiken_integration_script():
     return FileResponse(ROOT / "aiken-integration.js", media_type="text/javascript")

@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from courseworks_secretary.config import WORK_DIR
+from .effort import course_effort_estimates, item_effort
 from .runtime_config import setting
 
 GUIDE_PATH = WORK_DIR / "course-guide.json"
@@ -67,4 +68,11 @@ def _validated(guide: Any) -> dict[str, Any]:
             for field in ("items", "bullets"):
                 if field in section and (not isinstance(section[field], list) or not all(isinstance(item, dict) for item in section[field])):
                     raise ValueError(f"Guide section {field} must be a list of objects")
+            for item in section.get("items") or []:
+                for occurrence in item.get("occurrences") or [item]:
+                    if not isinstance(occurrence, dict):
+                        raise ValueError("Guide item occurrences must be objects")
+                    item_effort(item, occurrence)
+    # Rejects malformed or duplicate estimates before the guide is stored.
+    course_effort_estimates(guide)
     return guide

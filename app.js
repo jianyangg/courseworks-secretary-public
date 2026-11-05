@@ -7,6 +7,8 @@ const timelineSummary = document.getElementById('timeline-summary');
 const gradedWork = document.getElementById('graded-work');
 const allWorkButton = document.getElementById('all-work-button');
 const calendarButton = document.getElementById('calendar-button');
+const waveButton = document.getElementById('wave-button');
+const waveView = document.getElementById('wave');
 const gradedWorkButton = document.getElementById('graded-work-button');
 const assessmentsButton = document.getElementById('assessments-button');
 const assessments = document.getElementById('assessments');
@@ -33,6 +35,10 @@ let hiddenCourseKeys = new Set();
 // in on paper or on another site). Per-browser, like the course filter.
 let doneTaskIds = new Set();
 let seenChangeIds = new Set();
+// Hours the viewer typed for a task, by task id. They take precedence over the
+// course-guide review's estimate and stay in this browser, like done marks.
+let sizeOverrides = new Map();
+let selectedWaveTaskId;
 let displayMode = 'timeline';
 let calendarYear;
 let calendarMonthIndex;
@@ -53,6 +59,7 @@ const storagePrefix = isDemo ? 'courseworks-demo-' : 'courseworks-';
 const hiddenCoursesStorageKey = `${storagePrefix}hidden-courses`;
 const doneTasksStorageKey = `${storagePrefix}done-tasks`;
 const seenChangesStorageKey = `${storagePrefix}seen-changes`;
+const sizeOverridesStorageKey = `${storagePrefix}size-overrides`;
 
 const linkIcon = `
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -118,11 +125,13 @@ function setDisplayMode(mode) {
   const calendarVisible = mode === 'calendar';
   timeline.hidden = mode !== 'timeline';
   calendar.hidden = !calendarVisible;
+  waveView.hidden = mode !== 'wave';
   gradedWork.hidden = !graded;
   assessments.hidden = mode !== 'assessments';
   courseFilters.hidden = !(timelineData?.courses || []).length;
   allWorkButton.setAttribute('aria-pressed', String(mode === 'timeline'));
   calendarButton.setAttribute('aria-pressed', String(calendarVisible));
+  waveButton.setAttribute('aria-pressed', String(mode === 'wave'));
   gradedWorkButton.setAttribute('aria-pressed', String(graded));
   assessmentsButton.setAttribute('aria-pressed', String(mode === 'assessments'));
   if (timelineData) renderVisibleWork();
@@ -133,6 +142,7 @@ function renderVisibleWork() {
   visible.changes = visible.changes.filter((change) => !seenChangeIds.has(change.id));
   renderTimelineContent(visible);
   renderCalendar(visible);
+  renderWave(visible);
   renderGradedWork(visible);
   AssessmentOverview.render(visible);
   if (displayMode === 'graded') {
@@ -164,6 +174,26 @@ function saveStoredKeys(storageKey, keys) {
 function toggleTaskDone(taskId) {
   doneTaskIds = TimelineFilters.toggleKey(doneTaskIds, taskId);
   saveStoredKeys(doneTasksStorageKey, doneTaskIds);
+  renderVisibleWork();
+}
+
+function loadSizeOverrides() {
+  let stored = '';
+  try {
+    stored = localStorage.getItem(sizeOverridesStorageKey);
+  } catch (_error) {
+    // Without storage, sizes set now still apply for this page load.
+  }
+  return WorkloadWave.parseSizeOverrides(stored);
+}
+
+function setSizeOverride(taskId, hours) {
+  sizeOverrides = WorkloadWave.withSizeOverride(sizeOverrides, taskId, hours);
+  try {
+    localStorage.setItem(sizeOverridesStorageKey, WorkloadWave.serializeSizeOverrides(sizeOverrides));
+  } catch (_error) {
+    // The size still applies for this page load when storage is unavailable.
+  }
   renderVisibleWork();
 }
 
@@ -217,6 +247,8 @@ function render(data) {
   // Done marks are not pruned: a task can be absent from one sync because a
   // source failed to load, and its mark must still apply when it returns.
   doneTaskIds = loadStoredKeys(doneTasksStorageKey, null);
+  // Not pruned either, for the same reason as done marks.
+  sizeOverrides = loadSizeOverrides();
   seenChangeIds = loadStoredKeys(seenChangesStorageKey, (data.changes || []).map((change) => change.id));
   renderCourseFilters();
   renderVisibleWork();
@@ -224,6 +256,7 @@ function render(data) {
 
 allWorkButton.addEventListener('click', () => setDisplayMode('timeline'));
 calendarButton.addEventListener('click', () => setDisplayMode('calendar'));
+waveButton.addEventListener('click', () => setDisplayMode('wave'));
 gradedWorkButton.addEventListener('click', () => setDisplayMode('graded'));
 assessmentsButton.addEventListener('click', () => setDisplayMode('assessments'));
 

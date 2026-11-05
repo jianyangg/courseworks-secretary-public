@@ -188,6 +188,9 @@ def merge_task(target: dict, incoming: dict, zone) -> None:
         target["guideTitle"] = incoming["title"]
     if incoming.get("showInAssessmentOverview"):
         target["showInAssessmentOverview"] = True
+    # Canvas has no notion of effort, so a reviewed estimate always applies.
+    if incoming.get("effort"):
+        target["effort"] = incoming["effort"]
     if incoming.get("recordKey"):
         target["recordKey"] = target.get("recordKey") or incoming["recordKey"]
     aliases = identity_keys(target) | identity_keys(incoming)

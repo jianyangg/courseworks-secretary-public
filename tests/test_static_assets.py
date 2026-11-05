@@ -37,6 +37,20 @@ class StaticAssetTests(unittest.TestCase):
         self.assertIn('id="calendar-button"', markup)
         self.assertIn('id="calendar"', markup)
 
+    def test_wave_scripts_are_served_and_loaded_in_dependency_order(self):
+        from api.index import workload_wave_script
+
+        response = workload_wave_script()
+        self.assertEqual(response.path, ROOT / "workload-wave.js")
+        markup = (ROOT / "index.html").read_text(encoding="utf-8")
+        # The wave maths reads CalendarView at load time; the view reads both.
+        self.assertLess(markup.index('/calendar-view.js'), markup.index('/workload-wave.js'))
+        self.assertLess(markup.index('/workload-wave.js'), markup.index('/ui/wave.js'))
+        self.assertLess(markup.index('/ui/wave.js'), markup.index('/app.js'))
+        self.assertIn('id="wave-button"', markup)
+        self.assertIn('id="wave"', markup)
+        self.assertTrue((ROOT / "ui" / "wave.css").is_file())
+
     def test_aiken_integration_script_is_served_and_loaded_before_the_app(self):
         from api.index import aiken_integration_script
 

@@ -4,6 +4,7 @@ from typing import Any, Dict, Iterable, List
 from urllib.parse import urlparse
 from zoneinfo import ZoneInfo
 
+from .effort import item_effort
 from .task_identity import course_key, guide_record_key
 from ..config import TIME_ZONE
 
@@ -85,6 +86,7 @@ def _tasks_for_item(
                 "isGraded": occurrence.get(
                     "isGraded", item.get("isGraded", (section or {}).get("isGraded"))
                 ),
+                "effort": item_effort(item, occurrence),
             }
         )
     return tasks

@@ -53,4 +53,18 @@ Include `deadlineTime` only when the source gives an actual time. Date-only entr
 
 A refresh does not change the guide's review timestamp or interpret new announcements. Review conflicts and proposed changes against their sources before updating this file. For optional personal hosting, use `python courseworks.py guide-upload` after approval.
 
+## Effort estimates
+
+The Wave view sizes each task by estimated hours. The reviewing agent writes these estimates; the daily sync never guesses one, and work without an estimate is shown as "not estimated". The viewer can override any size in the dashboard; overrides stay in that browser.
+
+Give a dated item (or one of its `occurrences`) an `effort` record: `"effort": {"hours": 4, "basis": "1,500-word essay with two cited sources"}`. An occurrence's own `effort` replaces the item's. For Canvas assignments the guide does not otherwise list, add a course-level list keyed by assignment id (the course needs `canvasCourseId` or a Canvas `courseUrl`):
+
+```json
+"effortEstimates": [
+  {"canvasAssignmentId": 456, "hours": 1.5, "basis": "Ten multiple-choice questions on Chapter 4"}
+]
+```
+
+`hours` must be above 0 and at most 200, and `basis` is a short reason grounded in the assignment's actual requirements. An item-level estimate takes precedence over a course-level entry for the same assignment. Malformed or duplicate estimates make the upload fail.
+
 For recurring work, use an `occurrences` list with each source-confirmed `dueOn`. Dated occurrences stay separate even when they share an assignment source; completion of one occurrence does not hide the next.

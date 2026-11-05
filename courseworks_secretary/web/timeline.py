@@ -6,6 +6,7 @@ from zoneinfo import ZoneInfo
 
 from courseworks_secretary.source_links import assignment_links, safe_courseworks_url
 from courseworks_secretary.web.curated_timeline import curated_tasks
+from courseworks_secretary.web.effort import apply_course_estimates, course_effort_estimates
 from .task_identity import canvas_alias_keys, canvas_record_key, course_key, identity_keys, is_preparation, matching_task, merge_task, stable_task_id
 from ..config import TIME_ZONE
 
@@ -119,6 +120,9 @@ def build_timeline(
         for task in undated_candidates
         if not identity_keys(task) & dated_keys
     ]
+    # Course-level estimates fill in only after every guide item has merged, so
+    # an item's own estimate is never overwritten by a course-wide entry.
+    apply_course_estimates(tasks, course_effort_estimates(guide or {}))
     tasks = [task for task in tasks if not task.get("completed")]
     for task in tasks:
         task["id"] = stable_task_id(task)
@@ -172,6 +176,9 @@ def build_timeline(
                 "typeLabel": task.get("typeLabel"),
                 "isPreparation": _is_preparation(task),
                 "isGraded": bool(task.get("isGraded")),
+                # {"hours", "basis"} from the guide review, or None when nobody
+                # has estimated this work. Never defaulted: unknown stays unknown.
+                "effort": task.get("effort"),
             }
         )
 

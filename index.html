@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="/ui/demo-notice.css">
     <link rel="stylesheet" href="/ui/task-details.css">
     <link rel="stylesheet" href="/ui/calendar.css">
+    <link rel="stylesheet" href="/ui/wave.css">
     <link rel="stylesheet" href="/ui/course-guide.css">
     <link rel="stylesheet" href="/ui/graded-work.css">
     <link rel="stylesheet" href="/assessments.css">
@@ -22,6 +23,7 @@
     <script src="/timeline-filters.js" defer></script>
     <script src="/graded-work.js" defer></script>
     <script src="/calendar-view.js" defer></script>
+    <script src="/workload-wave.js" defer></script>
     <script src="/aiken-integration.js" defer></script>
     <script src="/aiken-actions.js" defer></script>
     <script src="/assessment-overview.js" defer></script>
@@ -32,6 +34,7 @@
     <script src="/ui/timeline.js" defer></script>
     <script src="/ui/graded-work.js" defer></script>
     <script src="/ui/calendar.js" defer></script>
+    <script src="/ui/wave.js" defer></script>
     <script src="/ui/source-notice.js" defer></script>
     <script src="/app.js" defer></script>
   </head>
@@ -65,6 +68,7 @@
           <div class="work-contents-links">
             <button type="button" id="all-work-button" aria-pressed="true" aria-controls="timeline"><span>Timeline</span></button>
             <button type="button" id="calendar-button" aria-pressed="false" aria-controls="calendar"><span>Calendar</span></button>
+            <button type="button" id="wave-button" aria-pressed="false" aria-controls="wave"><span>Wave</span></button>
             <button type="button" id="graded-work-button" aria-pressed="false" aria-controls="graded-work"><span>Graded work</span></button>
             <button type="button" id="assessments-button" aria-pressed="false" aria-controls="assessments"><span>Exams &amp; projects</span></button>
           </div>
@@ -110,6 +114,16 @@
               <h3 id="calendar-agenda-title"></h3>
               <div id="calendar-agenda-items"></div>
             </section>
+          </section>
+          <section class="wave" id="wave" aria-label="Workload wave" hidden>
+            <p class="wave-key">
+              <span><i class="wave-key-bar" aria-hidden="true"></i>Bar height = hours (estimate or your size)</span>
+              <span><i class="wave-key-ring" aria-hidden="true"></i>Not estimated</span>
+              <span><i class="wave-key-pace" aria-hidden="true"></i>Daily pace</span>
+            </p>
+            <div class="wave-chart-area" id="wave-chart-area"></div>
+            <p class="wave-note" id="wave-note"></p>
+            <div class="wave-detail-area" id="wave-detail-area" aria-live="polite"></div>
           </section>
           <section class="graded-work" id="graded-work" aria-label="Upcoming graded work" aria-live="polite" hidden></section>
         </div>

@@ -1,0 +1,161 @@
+.wave[hidden] {
+  display: none;
+}
+
+.wave {
+  width: min(100%, 880px);
+  margin: 0 auto;
+}
+
+.wave-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.wave-key span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wave-key-bar,
+.wave-key-ring,
+.wave-key-pace {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.wave-key-bar { background: var(--text); }
+.wave-key-ring { border: 1.5px solid var(--muted); border-radius: 50%; }
+.wave-key-pace { background: color-mix(in srgb, var(--accent) 45%, transparent); }
+
+.wave-chart-area {
+  width: 100%;
+  overflow: hidden;
+}
+
+.wave-chart {
+  display: block;
+  overflow: visible;
+}
+
+.wave-weekend { fill: color-mix(in srgb, var(--line) 35%, transparent); }
+.wave-overdue-zone { fill: color-mix(in srgb, var(--danger) 8%, transparent); }
+.wave-grid { stroke: var(--line); stroke-width: 1; }
+.wave-baseline { stroke: var(--muted); stroke-width: 1; }
+.wave-today { stroke: var(--text); stroke-width: 1.5; }
+.wave-pace { fill: color-mix(in srgb, var(--accent) 45%, transparent); }
+
+.wave-axis-label {
+  fill: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.wave-overdue-label { fill: var(--danger); }
+
+.wave-unsized {
+  fill: var(--page);
+  stroke-width: 1.5;
+}
+
+.wave-mark {
+  cursor: pointer;
+  outline: none;
+}
+
+/* Your own sizes get an outline so they stand apart from review estimates. */
+.wave-mark.is-override {
+  stroke: var(--text);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 2;
+}
+
+.wave-mark:hover,
+.wave-mark:focus-visible,
+.wave-mark.is-selected {
+  stroke: var(--text);
+  stroke-width: 2.5;
+  stroke-dasharray: none;
+}
+
+.wave-note,
+.wave-hint {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.wave-detail-area {
+  width: min(100%, 720px);
+  margin: 24px auto 0;
+}
+
+.wave-size-status {
+  margin: 10px 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.wave-size-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.wave-size-form label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.wave-size-form input {
+  width: 6.5em;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
+.wave-size-form button {
+  padding: 6px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.wave-size-form button[type="submit"] {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--page);
+}
+
+.wave-size-form input:focus-visible,
+.wave-size-form button:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 2px;
+}
+
+.wave-size-message {
+  margin: 6px 0 0;
+  color: var(--danger);
+  font-size: 0.85rem;
+}
+
+.wave-size-message:empty {
+  display: none;
+}

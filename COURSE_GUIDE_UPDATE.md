@@ -14,6 +14,7 @@ Use ChatGPT Work with the project folder, or your preferred coding assistant.
 - **What to submit:** contents, format, destination, and deadlines.
 - **What to prepare:** required reading and work before class.
 - **Rules that matter:** attendance, late work, collaboration, permitted tools, and important changes.
+- **How big each task is:** an hour estimate with a one-line reason, based on the task's actual requirements. Leave it out when the requirements are not published yet.
 
 Use only the sections a course needs. Explain unfamiliar terms briefly. Prefer a few clear bullets to long paragraphs. Keep extra detail at the linked source.
 

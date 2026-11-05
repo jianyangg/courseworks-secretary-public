@@ -23,15 +23,22 @@ def demo_data(now: datetime | None = None) -> tuple[dict, dict]:
     deadline_sections = [{"label": "Key deadlines", "items": []} for _ in courses]
     for course, section in zip(guide_courses, deadline_sections):
         course["sections"].append(section)
+    # The last field is the review's effort estimate. The dashboard is left
+    # unestimated on purpose so the demo shows how unknown sizes appear.
     records = [
-        (1, 0, "Tell a story with a messy dataset", False, "Build a clear chart and explain the choice of visual encoding."),
-        (0, 1, "Problem set 3: search algorithms", False, "Submit the solutions and a short explanation of each approach."),
-        (2, 3, "Project proposal", True, "A short brief, one prototype, and the questions to test next."),
-        (0, 5, "Midterm exam", True, "Review the problem sets and bring the permitted reference sheet."),
-        (1, 10, "Interactive dashboard", True, "Submit the working dashboard, data notes, and a short walkthrough."),
-        (2, 37, "Final project showcase", True, "Present the final prototype and reflect on the design decisions."),
+        (1, 0, "Tell a story with a messy dataset", False, "Build a clear chart and explain the choice of visual encoding.",
+         {"hours": 3, "basis": "One chart and a short written rationale."}),
+        (0, 1, "Problem set 3: search algorithms", False, "Submit the solutions and a short explanation of each approach.",
+         {"hours": 6, "basis": "Four implementation problems with explanations."}),
+        (2, 3, "Project proposal", True, "A short brief, one prototype, and the questions to test next.",
+         {"hours": 8, "basis": "Brief, one prototype, and test questions."}),
+        (0, 5, "Midterm exam", True, "Review the problem sets and bring the permitted reference sheet.",
+         {"hours": 12, "basis": "Review three problem sets and prepare the reference sheet."}),
+        (1, 10, "Interactive dashboard", True, "Submit the working dashboard, data notes, and a short walkthrough.", None),
+        (2, 37, "Final project showcase", True, "Present the final prototype and reflect on the design decisions.",
+         {"hours": 20, "basis": "Final prototype, presentation, and reflection."}),
     ]
-    for index, (course_index, days, title, major, detail) in enumerate(records, start=1):
+    for index, (course_index, days, title, major, detail, effort) in enumerate(records, start=1):
         due = deadline(days)
         courses[course_index]["assignments"].append({
             "id": 9100 + index, "name": title, "due_at": due.isoformat(), "points_possible": 100,
@@ -42,6 +49,7 @@ def demo_data(now: datetime | None = None) -> tuple[dict, dict]:
             "deadlineTime": due.strftime("%-I:%M %p"), "canvasAssignmentId": 9100 + index,
             "sourceUrl": DEMO_SOURCE, "detail": detail, "isGraded": True,
             "showInAssessmentOverview": major,
+            **({"effort": effort} if effort else {}),
         })
     prep = deadline(2, 10, 0)
     guide_courses[0]["sections"].append({"label": "Prepare before class", "items": [{
