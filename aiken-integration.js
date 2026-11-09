@@ -62,5 +62,34 @@
     })].join('\n\n');
   }
 
-  return { AIKEN_APP_URL, buildTaskUrl, buildChatMessage, canAddTask };
+  /**
+   * Copy a chat message, then open Aiken in a new tab.
+   *
+   * Order matters. Browsers only allow a clipboard write from a page that
+   * still has focus (Chrome rejects it with "Document is not focused"), and
+   * opening a tab moves focus to that tab. So the copy must start first,
+   * while the click that triggered it still counts as a user gesture, and the
+   * tab opens only after the copy settles. The clipboard write finishes in
+   * milliseconds, well inside the browser's popup allowance for that click.
+   *
+   * The browser APIs are passed in so the ordering can be unit-tested without
+   * a DOM. Returns what happened so the caller can offer a manual fallback:
+   *   { copied: false }               -> show the message for manual copying
+   *   { copied: true, opened: false } -> popup blocked; offer a link instead
+   */
+  async function copyThenOpen(message, { writeText, open }, url = AIKEN_APP_URL) {
+    try {
+      await writeText(message);
+    } catch {
+      return { copied: false, opened: false };
+    }
+    // Do not pass "noopener" in the features string: with it, window.open
+    // returns null even on success, so a blocked popup would be undetectable.
+    // Clearing `opener` afterwards gives the same isolation.
+    const tab = open(url, '_blank');
+    if (tab) tab.opener = null;
+    return { copied: true, opened: Boolean(tab) };
+  }
+
+  return { AIKEN_APP_URL, buildTaskUrl, buildChatMessage, canAddTask, copyThenOpen };
 });

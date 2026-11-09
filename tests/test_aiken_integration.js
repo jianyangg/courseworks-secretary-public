@@ -67,3 +67,33 @@ test('exports the actual preparation deadline rather than the suggested start', 
   assert.equal(due(task), task.deadlineAt);
   assert.equal(due({ ...task, deadlineIsDateOnly: true }), '2026-10-21');
 });
+
+test('copies the chat message before opening Aiken, so the copy happens while the dashboard has focus', async () => {
+  const { copyThenOpen, AIKEN_APP_URL } = require('../aiken-integration.js');
+  const calls = [];
+  const tab = { opener: 'dashboard' };
+  const result = await copyThenOpen('Plan this', {
+    writeText: async (value) => { calls.push(['copy', value]); },
+    open: (url, target) => { calls.push(['open', url, target]); return tab; },
+  });
+  assert.deepEqual(calls, [['copy', 'Plan this'], ['open', AIKEN_APP_URL, '_blank']]);
+  assert.deepEqual(result, { copied: true, opened: true });
+  assert.equal(tab.opener, null);
+});
+
+test('does not open Aiken when the clipboard refuses the message', async () => {
+  const { copyThenOpen } = require('../aiken-integration.js');
+  let opened = false;
+  const result = await copyThenOpen('Plan this', {
+    writeText: async () => { throw new Error('Document is not focused'); },
+    open: () => { opened = true; return {}; },
+  });
+  assert.equal(opened, false);
+  assert.deepEqual(result, { copied: false, opened: false });
+});
+
+test('reports a blocked popup after a successful copy', async () => {
+  const { copyThenOpen } = require('../aiken-integration.js');
+  const result = await copyThenOpen('Plan this', { writeText: async () => {}, open: () => null });
+  assert.deepEqual(result, { copied: true, opened: false });
+});
