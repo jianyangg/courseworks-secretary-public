@@ -2,42 +2,48 @@
 
 **Your coursework, in view.**
 
-A personal dashboard for deadlines and instructions scattered across course pages, announcements, and syllabi.
+A personal dashboard that pulls deadlines and instructions out of course pages, announcements, and syllabi, and puts them in one place.
 
-Canvas is the platform made by [Instructure](https://www.instructure.com/canvas). Schools may use a local name; Columbia calls its Canvas service [CourseWorks](https://courseworks.columbia.edu/about.html).
+Canvas is the course platform made by [Instructure](https://www.instructure.com/canvas). Schools may give it a local name; Columbia calls it [CourseWorks](https://courseworks.columbia.edu/about.html).
 
 ![Canvas / CourseWorks Secretary showing fictional coursework](docs/showcase/courseworks-secretary-preview.png)
 
-## What it does
+## What you get
 
-- **Timeline and calendar:** see upcoming deadlines and preparation across your courses.
-- **Graded work:** focus on work that counts toward your grade.
-- **Exams and projects:** see confirmed major assessments grouped by course.
-- **Course guide:** find essential grading, submission requirements, preparation, and rules distilled from the sources.
-- **Source links:** open the original instructions when you need more detail.
-- **Optional Aiken handoff:** send a task draft or coursework notes to Aiken for review.
+Switch views from the menu in the top-left corner. Every view shows the same tasks, so a change in one shows up everywhere.
 
-The views share the same tasks. Linked coursework appears once, and known submissions leave the upcoming list. Preparation reminders stay separate from actual deadlines.
+- **Timeline:** upcoming deadlines and class preparation, day by day. Work without a due date sits in its own list, and a **What changed** panel lists new or removed assignments, moved deadlines, and new announcements from recent refreshes until you mark them seen.
+- **Calendar:** the same work by month. Pick a day to see its agenda.
+- **Wave:** how heavy the coming weeks are. Each bar is the estimated hours of work due that day; the strip underneath shows the hours per day you'd need if you spread each task over the days before it's due. Zoom from one to eight weeks, show or hide late work, pick a day to see what's due, and change a task's size if the estimate feels wrong. Estimates come from your course guide, and tasks without one are marked as not estimated rather than guessed.
+- **Graded work:** only what counts toward your grade, with a countdown to each deadline.
+- **Exams & projects:** confirmed major assessments, grouped by course.
+- **Course guide:** the essentials for each course (grading, what to submit, how to prepare, rules that matter), with links to the original sources.
 
-## Get started with ChatGPT
+You can also:
 
-[Follow the short beginner guide](GET_STARTED.md): download the project, open its folder in ChatGPT Work, and copy the setup request. ChatGPT can guide the technical steps, subject to the tools and permissions available in your account.
+- **Mark work done** in Graded work when Canvas can't see it, such as something handed in on paper. Submissions Canvas does know about leave the list on their own.
+- **Filter by course** with the chips under the title.
+- **Send work to [Aiken](https://aikendewit.com/app/)** (optional). The **+** next to a task gives two choices: **New task in Aiken** opens a task draft with the course, deadline, and source link filled in; **Plan in Aiken Chat** copies a short message about the task and opens Aiken Chat for you to paste it. In Graded work you can select several tasks and send them in one message.
 
-Each installation belongs to one person. Course review happens in ChatGPT or another assistant; the website displays the approved guide alongside synced coursework.
+Preparation reminders stay separate from real deadlines, and linked coursework (for example, a quiz and the assignment behind it) appears once.
 
-For a course brief only, start with your materials in ChatGPT. For Sites, check the adaptation limits in [the beginner guide](GET_STARTED.md#what-about-sites). Commands and optional online hosting are in [the technical reference](TECHNICAL_SETUP.md).
+## Try it
+
+[See the demo first](docs/demo.md): it runs on your computer with fictional courses and needs no Canvas account.
+
+## Set it up for your courses
+
+[Follow the beginner guide](GET_STARTED.md). In short: download the project, open the folder in ChatGPT Work (or another coding assistant), and paste the setup request. The assistant walks you through connecting Canvas and writing your course guide.
+
+Commands and optional online hosting are in [the technical reference](TECHNICAL_SETUP.md).
 
 ## Keep your information private
 
-- Keep access keys, course files, and personal guides out of GitHub. This project contains fictional demo data.
-- Follow your school's Canvas access rules. Treat an access key like a password. [Access requirements](https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth).
-- Anyone with your dashboard password can see its coursework. Share it only with people who should have that access.
+- Keep access keys, course files, and your guide out of GitHub. This repository only contains fictional demo data.
+- Follow your school's rules for Canvas access, and treat an access key like a password. [Canvas access requirements](https://developerdocs.instructure.com/services/canvas/oauth2/file.oauth).
+- Anyone with your dashboard password can see your coursework. Share it only with people who should.
 
-The app reads Canvas information. It does not submit work, edit Canvas, or mark tasks complete.
-
-## How I used AI
-
-I used Codex to build the app and study course sources, then distill the essentials into my private guide. The public project includes the application and review workflow so students can make their own version.
+The app only reads from Canvas. It never submits work, edits Canvas, or marks anything complete there. Done marks and size changes stay in your browser.
 
 ## Development
 

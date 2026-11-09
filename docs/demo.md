@@ -1,10 +1,31 @@
 # Demo
 
-The `/demo` route uses fictional Machine Learning, Data Visualization, and Design Studio courses in the same interface as a personal installation. Dates move with the viewing date so the sample remains useful.
+The demo is the real dashboard filled with three made-up courses: Machine Learning, Data Visualization, and Design Studio. Dates move with today's date, so there is always upcoming work. It needs no Canvas account and makes no outside requests.
 
-It demonstrates the timeline, course filters, preparation, source links, graded deadlines, exams/projects, calendar, and course guide. The guide shows a concise course brief: essential grading, submission requirements, preparation, and rules synthesized across the sample sources. **Reset demo** regenerates the sample. No credential is requested, no Canvas or Ed request is made, and no private snapshot or guide is read.
+## Open it
 
-The example banner links to [the ChatGPT beginner guide](../GET_STARTED.md), which covers a course brief from supplied materials, full local setup with ChatGPT Work, and the compatibility work needed for a Sites adaptation.
+With the project installed ([technical reference](../TECHNICAL_SETUP.md#install-and-preview)), run:
+
+```sh
+python -m uvicorn api.index:app --host 127.0.0.1 --port 8000
+```
+
+Then open `http://127.0.0.1:8000/demo`. (`/demo?preview=1` adds padding on a plain background, for screenshots.)
+
+## A two-minute tour
+
+1. **Top-left menu.** Switch between the five views. They all show the same tasks.
+2. **Timeline.** Scroll the days ahead. Preparation items (like reading before class) are shown apart from deadlines. Open a task to read its instructions and source link.
+3. **Course chips** under the title. Turn a course off to hide it everywhere.
+4. **Calendar.** Pick a day to see its agenda below the month.
+5. **Wave.** Bars show estimated hours due each day; the strip underneath shows the daily pace. Try **1 wk** to **8 wk**, then click a day and change a task's size.
+6. **Graded work.** Only work that affects your grade. **Mark done** hides something Canvas can't see you finished (undo it from the **Marked done** list). Select a few items to send them to Aiken Chat together.
+7. **Exams & projects.** The big assessments, grouped by course.
+8. **Course guide.** The short brief for each course, built from the sample sources below.
+
+**Reset demo**, next to **Course guide**, regenerates the sample. Done marks and size changes are saved only in your browser.
+
+The banner at the top links to [the beginner guide](../GET_STARTED.md) for setting it up with your own courses.
 
 ## Sources
 
